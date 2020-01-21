@@ -6,9 +6,9 @@
 ## About [Node.Js](https://nodejs.org/dist/latest-v12.x/docs/api/)
 What is Node? From official site: "Node.js® is a JavaScript runtime built on Chrome's V8 JavaScript engine."
 Unlike .NET, it is event based, single threaded, not thread based.
-In practice, this means that all operations are put on the event loop and brought to the mainframe when ready.
+In practice, this means that all operations are put on the event loop and brought back into the main thread when ready.
 This means that coding style is different, all framework ops have callbacks.
-Now, single threaded doesn't actually mean everything rund in a single thread, it means that the MAIN thread is the only thread available to current running process.
+Now, single threaded doesn't actually mean everything runs in a single thread, it means that the MAIN thread is the only thread available to current running process.
 All I/O ops run internally on separate threads and use callback functions to be brought back to the main thread.
 
 Here's an example:
@@ -99,9 +99,9 @@ function onIncomingRequest(requset, response) {
 	}
 }
 ```
-What we've done here is to change the reponse based on URL of the request. Any other route will not yield a response, there is no "magic" 404, whe would need to add one.
-And this highlights a very good "issue" for a ASP developer: there is no magic happenning in the background, in the framework that you have to know beforehand,
-there are no special meaning files, methods, configs, or whatever, that need to be carefully setup so that the server can start and repond properly.
+What we've done here is to change the reponse based on URL of the request. Any other route will not yield a response, there is no "magic" 404, we would need to add one.
+And this highlights a very good "issue" for a ASP developer: there is no magic happening in the background, in the framework that you have to know beforehand,
+there are no files with special meaning (e.g. `global.asax`), methods (e.g. `void Main()`), configs (e.g. `app.dll.config`), or whatever else magic that need to be carefully setup so that the server can start and repond properly.
 Everything is in plain sight, WYSIWYG.
 This can be tedious and overwhelming, so for this reason, in real life, we use already prepped modules to set these up for us.
 
