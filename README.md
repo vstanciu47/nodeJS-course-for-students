@@ -142,3 +142,22 @@ const app = express();
 https.createServer({ key: privateKey, cert: certificate }, app)
 	.listen(443);
 ```
+
+## Express quick setup
+- `mkdir express-server-js & cd express-server-js`
+- `npm init -y`
+- `npm i -s express`
+- change `"main": "src/index.js"` in `package.json`
+- `mkdir src & cd src`
+- add `index.js`, `env.js`, `app.js`, `log.js`
+- `mkdir routes`
+- add `routes/discovery-client.route.js`, `routes/a-json.route.js`
+- `mkdir services`
+- add `services/a-json.service.js`
+- `cd ..`
+- run `node .`
+- open browser to http://localhost:58080/ => 404 (no listner registered for route "/")
+- go to http://localhost:58080/discovery/client => server settings that clients would need (this is the only URL they would need to hardcode)
+- go to http://localhost:58080/api/json => the json response for this route
+
+Congratulations! You've just created a Node API and it looks like a manageable project now!
