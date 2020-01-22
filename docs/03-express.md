@@ -61,6 +61,10 @@ when cloning a repo, the first thing you need to do is to restore these dependen
   - add `routes/discovery-client.route.js`, `routes/a-json.route.js`
 - `mkdir services`
   - add `services/a-json.service.js`
+- `mkdir data`
+  - add `data/a-json.data.js`
+- `mkdir models`
+  - add `models/a-json.model.js`
 - `cd ..`
 - run `node .`; the `.` here means the current folder; since the folder contains a `package.json`, it will be used first for reading the project setup;
 the entry point is the one specified in `main`; you could also run `node src/index.js`, it is esentially the same thing;
