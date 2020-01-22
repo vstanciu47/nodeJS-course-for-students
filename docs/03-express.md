@@ -21,7 +21,7 @@ app.get("/", function (req, res) {
 // start listening
 app.listen(80);
 ```
-This is doing the same as in the previous example. It uses the `http` module and performs the same function as above.
+This is doing the same as in the previous example.
 
 With (modules like) this, our API can finally be easily implemented, concentrating on "middleware" style, not on tedious formatting of proper responses.
 
