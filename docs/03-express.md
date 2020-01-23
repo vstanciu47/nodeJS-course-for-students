@@ -95,4 +95,4 @@ Congratulations! You've just created a Node API and it looks like a manageable p
 
 
 
-
+[Next: typescript](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/04-typescript.md)
