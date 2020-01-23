@@ -22,16 +22,18 @@ The tutorials are easy to follow and yield immediate results, so have fun buildi
 
 ## TOC
 
-### [01. About Node.js](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/01-about.md)
+##### [01. About Node.js](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/01-about.md)
 
-### [02. The `http` and `https` modules](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/02-http.md)
+##### [02. The `http` and `https` modules](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/02-http.md)
 
-### [03. Express](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/03-express.md)
+##### [03. Express](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/03-express.md)
 
-### [04. Typescript](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/04-typescript.md)
+##### [04. Typescript](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/04-typescript.md)
 
-### [05. Unit tests](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/05-unit-tests.md)
+##### [05. Modules, packages, libraries](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/05-modules-packages-libraries.md)
 
-### [06. End to end tests](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/06-e2e-tests.md)
+##### [06. Unit tests](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/06-unit-tests.md)
 
-### [07. Mongo db + ORM](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/07-mongodb-orm.md)
+##### [07. End to end tests](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/07-e2e-tests.md)
+
+##### [08. Mongo db + ORM](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/08-mongodb-orm.md)
