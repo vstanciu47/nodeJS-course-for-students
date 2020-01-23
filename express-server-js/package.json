@@ -1,14 +1,17 @@
 {
 	"name": "express-server-js",
 	"version": "1.0.0",
+	"private": true,
 	"description": "",
+	"keywords": [],
+	"author": "valentin_ianchis@waters.com",
+	"repository": "ssh://git@bitbucketprod1.waters.com:7999/~rovian/nodejs-api-for-a-.net-developer.git",
+	"license": "ISC",
 	"main": "src/index.js",
 	"scripts": {
+		"start": "node src/index.js",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
-	"keywords": [],
-	"author": "",
-	"license": "ISC",
 	"dependencies": {
 		"express": "^4.17.1"
 	}

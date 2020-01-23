@@ -67,8 +67,7 @@ when cloning a repo, the first thing you need to do is to restore these dependen
   - add `models/a-json.model.js`
 - `cd ..`
 - run `node .`; the `.` here means the current folder; since the folder contains a `package.json`, it will be used first for reading the project setup;
-the entry point is the one specified in `main`; you could also run `node src/index.js`, it is esentially the same thing;
-anyway, after running the command, the console should display the message `development server listening on port 58080`;
+the entry point is the one specified in `main`; you could also run `node src/index.js`, it is esentially the same thing; and yet another way to run the app is with `npm run start` or `npm start`; `npm` reads the `scripts` section of the `package.json` and looks for the `start` script and executes it. After running the command, the console should display the message `development server listening on port 58080`;
 
 - open browser to http://localhost:58080/ => 404 (no listener registered for route "/")
 - go to http://localhost:58080/discovery/client => server settings that clients would need (this is the only URL they would need to hardcode)
