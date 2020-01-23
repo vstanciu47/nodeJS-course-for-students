@@ -1,11 +1,11 @@
-const express = require("express");
-const { env } = require("./env");
-const { discoveryClientRouter } = require("./routes/discovery-client.route");
-const { aJsonRouter } = require("./routes/a-json.route");
+import * as express from "express";
+import { env } from "./env";
+import { discoveryClientRouter } from "./routes/discovery-client.route";
+import { aJsonRouter } from "./routes/a-json.route";
 
-module.exports.makeApp = makeApp;
+export { makeApp };
 
-let app;
+let app: express.Application;
 
 function makeApp() {
 	if (app) return app;
@@ -19,13 +19,13 @@ function makeApp() {
 	// 404
 	app.use((_req, _res, next) => {
 		const err = new Error("Not Found");
-		err.status = 404;
+		(<any>err).status = 404;
 		next(err);
 	});
 
 	// 500
-	app.use((err, _req, res) => {
-		res.status(err.status || 500).send(env.NODE_ENV === "development" ? err : {});
+	app.use((err: Error, _req: express.Request, res: express.Response) => {
+		res.status((<any>err).status || 500).send(env.NODE_ENV === "development" ? err : {});
 	});
 
 	return app;

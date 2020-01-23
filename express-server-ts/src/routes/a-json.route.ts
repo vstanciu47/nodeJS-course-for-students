@@ -1,13 +1,11 @@
-﻿const express = require("express");
-const aJsonService = require("../services/a-json.service");
+﻿import * as express from "express";
+import * as aJsonService from "../services/a-json.service";
 
-const aJsonRouter = express.Router();
-
-module.exports.aJsonRouter = aJsonRouter;
+export const aJsonRouter = express.Router();
 
 aJsonRouter.get("/", getAJson);
 
-function getAJson(_req, res, next) {
+function getAJson(_req: express.Request, res: express.Response, next: express.NextFunction) {
 	try {
 		const jsonData = aJsonService.getAJson();
 		return res.json(jsonData);

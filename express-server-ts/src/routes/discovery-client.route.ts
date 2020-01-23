@@ -1,13 +1,11 @@
-﻿const express = require("express");
-const { env } = require("../env");
+﻿import * as express from "express";
+import { env } from "../env";
 
-const discoveryClientRouter = express.Router();
-
-module.exports.discoveryClientRouter = discoveryClientRouter;
+export const discoveryClientRouter = express.Router();
 
 discoveryClientRouter.get("/", getdiscoveryClient);
 
-function getdiscoveryClient(_req, res, next) {
+function getdiscoveryClient(_req: express.Request, res: express.Response, next: express.NextFunction) {
 	try {
 		const clientSettings = {
 			jsonRoute: env.A_JSON_ROUTE

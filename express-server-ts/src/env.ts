@@ -1,4 +1,4 @@
-module.exports.env = getEnv();
+export const env = getEnv();
 
 function getEnv() {
 	// use process.env, process.argv

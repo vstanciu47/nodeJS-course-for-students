@@ -1,6 +1,6 @@
-const aJsonData = require("../data/a-json.data");
+import * as aJsonData from "../data/a-json.data";
 
-module.exports.getAJson = getAJson;
+export { getAJson };
 
 function getAJson() {
 	// get the data from the persistence; this can be from memory, a file on disk, a db

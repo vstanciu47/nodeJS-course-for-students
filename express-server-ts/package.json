@@ -8,15 +8,20 @@
 	"repository": "ssh://git@bitbucketprod1.waters.com:7999/~rovian/nodejs-api-for-a-.net-developer.git",
 	"license": "ISC",
 	"scripts": {
-		"start": "ts-node-dev src/index --watch",
+		"start": "npm run type:check && npm run lint && npm run ts:node:dev",
+		"type:check": "tsc --noEmit --project .",
+		"ts:node:dev": "ts-node-dev src/index --watch",
+		"lint": "tslint --project .",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"dependencies": {
 		"express": "^4.17.1"
 	},
 	"devDependencies": {
+		"@types/express": "^4.17.2",
 		"@types/node": "^12.12.25",
 		"ts-node-dev": "^1.0.0-pre.44",
+		"tslint": "^6.0.0",
 		"typescript": "^3.7.5"
 	}
 }
