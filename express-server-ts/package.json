@@ -1,0 +1,22 @@
+{
+	"name": "express-server-js",
+	"version": "1.0.0",
+	"private": true,
+	"description": "",
+	"keywords": [],
+	"author": "valentin_ianchis@waters.com",
+	"repository": "ssh://git@bitbucketprod1.waters.com:7999/~rovian/nodejs-api-for-a-.net-developer.git",
+	"license": "ISC",
+	"scripts": {
+		"start": "ts-node-dev src/index --watch",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"dependencies": {
+		"express": "^4.17.1"
+	},
+	"devDependencies": {
+		"@types/node": "^12.12.25",
+		"ts-node-dev": "^1.0.0-pre.44",
+		"typescript": "^3.7.5"
+	}
+}

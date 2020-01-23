@@ -1,0 +1,32 @@
+/* https://www.typescriptlang.org/docs/handbook/compiler-options.html */
+{
+	"compileOnSave": false,
+	"compilerOptions": {
+		"target": "esnext",
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"resolveJsonModule": true,
+		"sourceMap": false,
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"lib": [ "esnext" ],
+		"noImplicitAny": true,
+		"suppressImplicitAnyIndexErrors": false,
+		"alwaysStrict": true,
+		"removeComments": false,
+		"strictNullChecks": true,
+		"noImplicitThis": true,
+		"noUnusedParameters": true,
+		"noUnusedLocals": true,
+		"noImplicitReturns": true,
+		"skipLibCheck": true,
+		"allowUnreachableCode": false,
+		"allowUnusedLabels": false,
+		"noFallthroughCasesInSwitch": true,
+		"noEmitHelpers": false,
+		"allowSyntheticDefaultImports": true,
+		"forceConsistentCasingInFileNames": true,
+		"pretty": true
+	},
+	"exclude": [ "node_modules", "bin", "obj" ]
+}
