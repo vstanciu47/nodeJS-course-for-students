@@ -1,7 +1,9 @@
 ﻿import * as express from "express";
 import { env } from "../env";
 
-export const discoveryClientRouter = express.Router();
+const discoveryClientRouter = express.Router();
+
+export { discoveryClientRouter };
 
 discoveryClientRouter.get("/", getdiscoveryClient);
 

@@ -1,7 +1,8 @@
 import * as express from "express";
 import { env } from "./env";
 import { discoveryClientRouter } from "./routes/discovery-client.route";
-import { aJsonRouter } from "./routes/a-json.route";
+import { setAJsonRoute } from "./routes/a-json.route";
+import { IExpressError } from "./interfaces/IExpressError";
 
 export { makeApp };
 
@@ -14,18 +15,18 @@ function makeApp() {
 
 	// routes
 	app.use(env.DISCOVERY_CLIENT_ROUTE, discoveryClientRouter);
-	app.use(env.A_JSON_ROUTE, aJsonRouter);
+	app.use(env.A_JSON_ROUTE, setAJsonRoute(express.Router()));
 
 	// 404
-	app.use((_req, _res, next) => {
-		const err = new Error("Not Found");
-		(<any>err).status = 404;
+	app.use((_req: express.Request, _res: express.Response, next: express.NextFunction) => {
+		const err = new Error("Not Found") as IExpressError;
+		err.status = 404;
 		next(err);
 	});
 
 	// 500
-	app.use((err: Error, _req: express.Request, res: express.Response) => {
-		res.status((<any>err).status || 500).send(env.NODE_ENV === "development" ? err : {});
+	app.use((err: IExpressError, _req: express.Request, res: express.Response) => {
+		res.status(err.status || 500).send(env.NODE_ENV === "development" ? err : {});
 	});
 
 	return app;

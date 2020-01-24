@@ -3,10 +3,11 @@
 	"compileOnSave": false,
 	"compilerOptions": {
 		"target": "esnext",
+		"outDir": "./bin",
 		"module": "commonjs",
 		"moduleResolution": "node",
 		"resolveJsonModule": true,
-		"sourceMap": false,
+		"sourceMap": true,
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true,
 		"lib": [ "esnext" ],

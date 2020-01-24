@@ -1,4 +1,4 @@
-module.exports.log = log;
+export { log };
 
 function log(message: Error | string) {
 	// tslint:disable:no-eval

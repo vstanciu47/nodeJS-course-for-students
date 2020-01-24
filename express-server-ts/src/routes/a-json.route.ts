@@ -1,11 +1,15 @@
-﻿import * as express from "express";
+﻿import { Router, Request, Response, NextFunction } from "express";
 import * as aJsonService from "../services/a-json.service";
 
-export const aJsonRouter = express.Router();
+export { setAJsonRoute };
 
-aJsonRouter.get("/", getAJson);
+function setAJsonRoute(router: Router): Router {
+	router.get("/", getAJson);
 
-function getAJson(_req: express.Request, res: express.Response, next: express.NextFunction) {
+	return router;
+}
+
+function getAJson(_req: Request, res: Response, next: NextFunction) {
 	try {
 		const jsonData = aJsonService.getAJson();
 		return res.json(jsonData);

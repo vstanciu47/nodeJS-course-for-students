@@ -10,8 +10,9 @@ function getAJson() {
 		nonExistingModelProp: "who cares" // key does not exist in the model, but the data may contain it
 	};
 
-	// construct the model from data
-	const ret = aJsonModel.aJsonModel(obj);
+	// construct the model from data, using either the function or class, whichever style you implemented
+	let ret = aJsonModel.aJsonModel(obj);
+	ret = new aJsonModel.AJsonModel(obj);
 
 	return ret;
 }
