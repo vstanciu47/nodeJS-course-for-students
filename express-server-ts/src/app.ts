@@ -1,6 +1,6 @@
 import * as express from "express";
 import { env } from "./env";
-import { discoveryClientRouter } from "./routes/discovery-client.route";
+import { setDiscoveryClientRouter } from "./routes/discovery-client.route";
 import { setAJsonRoute } from "./routes/a-json.route";
 import { IExpressError } from "./interfaces/IExpressError";
 
@@ -14,7 +14,7 @@ function makeApp() {
 	app = express();
 
 	// routes
-	app.use(env.DISCOVERY_CLIENT_ROUTE, discoveryClientRouter);
+	app.use(env.DISCOVERY_CLIENT_ROUTE, setDiscoveryClientRouter(express.Router()));
 	app.use(env.A_JSON_ROUTE, setAJsonRoute(express.Router()));
 
 	// 404

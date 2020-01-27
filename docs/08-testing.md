@@ -83,7 +83,18 @@ Now let's look at the new test we added: we're mocking the service dependency, a
 The `router` mock is used to obtain references to the callback functions for the paths defined in the route file.
 The tests manipulate the service mock to test the success or failure of the route.
 
+We'll do the same for `discovery-client.route.ut.test.ts`, only this time we'll abstract out the router mock set up in `test/express-router-test.helper.ts`.
+We'll also create helpers for creating `Response` object mocks and `NextFunction` function mocks.
+We'll set up `jasmine` spies, which are internal functions that track calls to functions in a container, e.g. `{ trackMe: () => ... }`.
+The tests can now be written with a lot less noise:
+```typescript
+const next = getNextFunctionSpyMock();
+routes["GET"]["/"](undefined, undefined, next);
+expect(next).toHaveBeenCalledWith(TypeError("Cannot read property 'A_JSON_ROUTE' of undefined"));
+```
+
 If we would want an integration test, we would create a test express app, register the router, and use the e2e test tehnique (see next section) on this route alone.
+I would still mock the lowest layers that usually write stuff to persistence, so the machine remains in a clean state and tests can run in paralel and multiple times.
 
 
 
