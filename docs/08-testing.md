@@ -99,3 +99,49 @@ I would still mock the lowest layers that usually write stuff to persistence, so
 
 
 ### End-to-end tests
+
+Add [`supertest`](https://www.npmjs.com/package/supertest) package `npm i -D supertest @types/supertest`.
+
+Add the new config file `test/config.e2e.jasmine.ts`
+
+Add a new script in `package.json`: "test:e2e": `"ts-node-dev node_modules/jasmine/bin/jasmine --config=test/config.e2e.jasmine",`.
+Update the `test` script as well: `"test": "npm run test:unit && npm run test:e2e"`.
+
+Add a test file: `test/get-discovery-client.e2e.test.ts`.
+In it, we import the app maker function and test a single route.
+
+This tehnique can be used for integration tests as well, but instead of importing the whole app already made, we need to make one and mount a single route:
+```typescript
+// integration test example for a single route, with 'supertest'
+// when routes are doing too much, be free to use `proxyquire` instead of import/require to mock the deps down the chain
+
+import * as express from "express";
+import * as supertest from "supertest";
+import { env } from "../env"
+import { setDiscoveryClientRouter } from "./discovery-client.route";
+
+describe(`GET ${env.DISCOVERY_CLIENT_ROUTE}`, () => {
+	let app: express.Application;
+
+	beforeEach(() => app = express());
+
+	it("success", done => {
+		app.use(env.DISCOVERY_CLIENT_ROUTE, setDiscoveryClientRouter(express.Router()));
+
+		supertest(app)
+			.get(env.DISCOVERY_CLIENT_ROUTE)
+			.expect(200, { jsonRoute: env.A_JSON_ROUTE }, done);
+	});
+});
+```
+You can now save this integration test as `src/routes/discovery-client.route.it.test` and run the whole batch `npm test`.
+
+We now have two rounds of tests, that can be run together or separately, without complicated setup, extra projects, etc.
+
+
+
+### Notes
+
+I've considered unit and integration tests together, for simplicity, but they could be separated out to be able to run individually; modify/add a new jasmine config with a proper file name filter and create a run command.
+
+I've also saved unit and integration tests beside their actual code files, to be easier to spot and to follow a convention from angular/frontend projects, but these can be easily moved out (just modify jasmine config).
