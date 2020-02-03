@@ -34,6 +34,6 @@ The tutorials are easy to follow and yield immediate results, so have fun buildi
 
 ##### [06. Modules, packages, libraries](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/06-modules-packages-libraries.md)
 
-##### [07. Mongo db + ORM](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/07-mongodb-orm.md)
+##### [07. Testing](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/07-testing.md)
 
-##### [08. Testing](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/08-testing.md)
+##### [08. Mongodb](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/08-mongodb.md)

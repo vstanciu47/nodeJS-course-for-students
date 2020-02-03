@@ -48,7 +48,7 @@ https.createServer({ key: privateKey, cert: certificate }, app)
 
 ## Express quick setup
 
-The project is already included in this repo, in folder `express-server-js`; use that for reference.
+The files for this project are included in folder `./support/03/`; use them for reference.
 - create a folder for the first project `mkdir express-server-js & cd express-server-js`
 - create the "heart" of the Node project `npm init -y` => this produces a `package.json` with default values; this is all you ever need;
 you can add a VS project to contain this in the IDE, but it's not required.

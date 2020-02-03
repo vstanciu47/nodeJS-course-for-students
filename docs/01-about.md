@@ -35,6 +35,7 @@ function fsReadFileCallback(error, fileData) {
 		console.log(contents);
 }
 ```
+Save this file as `example.js` and run it in a console/terminal: `node example`.
 
 Node can do whatever .NET can do, more or less. You've already seen a short example of the `fs` module. BTW, in javascript packages are called modules.
 

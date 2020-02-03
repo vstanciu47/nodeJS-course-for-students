@@ -4,7 +4,7 @@
 
 ## 02. The `http` and `https` modules
 
-Node comes with both these packages. They are used for making requests and for hosting web servers
+Node comes with both these packages. They are used for making web requests and for hosting web servers.
 
 The obvious difference between them from a code point of view is how a server is started:
 `https` requires an options object with certificate contents to be able to start. For this short intro, we'll use `http`.
@@ -15,9 +15,10 @@ The simplest way to start a web server is this:
 const http = require("http");
 
 // create a server object with a given callback function
+const server = http.createServer(onIncomingRequest);
+
 // start listening for requests by attach it to a port
-http.createServer(onIncomingRequest)
-	.listen(80);
+server.listen(80);
 
 // function callback for incoming requests
 // first param is the request object, created by Node for us
@@ -29,9 +30,9 @@ function onIncomingRequest(requset, response) {
 	response.end();
 }
 ```
-This is impractical in real life, as it would respond the same for all requests; `http://localhost` and `http://localhost/index.html` would yield the same response.
+In this case, the server would send the same response to all requests; URLs like `http://localhost` and `http://localhost/index.html` are treated the same, as well as hhtp methods like GET, POST, etc.
 
-To make use of it, the requests must be filtered using the `request` object. Let's see a simple filter based on URL:
+To make use of it, the requests must be filtered using the `request` object. Let's see a simple filter based on URL (ignoring the method GET, POST, etc):
 ```javascript
 // function callback for incoming requests, with basic request filtering
 function onIncomingRequest(requset, response) {
@@ -66,12 +67,12 @@ function onIncomingRequest(requset, response) {
 	}
 }
 ```
-What we've done here is to change the reponse based on URL of the request. Any other route will not yield a response, there is no "magic" 404, we would need to add one.
+Now the reponse is adapted based on the URL of the incoming request. Any other route will not yield a response, there is no "magic" 404, we would need to add one.
 
-And this highlights a very good "issue" for a ASP developer: there is no magic happening in the background, in the framework that you have to know beforehand,
+And this highlights a very good "issue" for a ASP developer: there is no magic happening in the background (or the framework) that you have to know beforehand,
 there are no files with special meaning (e.g. `global.asax`), methods (e.g. `void Main()`), configs (e.g. `app.dll.config`), or whatever else magic that need to be carefully setup so that the server can start and repond properly.
 
-Everything is in plain sight, WYSIWYG.
+Everything is in plain sight, WYSIWYG style.
 
 This can be tedious and overwhelming, so for this reason, in real life, we use already prepped modules to set these up for us.
 
