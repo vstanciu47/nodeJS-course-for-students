@@ -20,7 +20,7 @@ Install [MikroORM](https://mikro-orm.io/) and mongodb driver
 
 Verify/update `tsconfig.json`, make sure `"experimentalDecorators": true,` exists under `compilerOptions` section.
 
-Add a new interface `interdace/IExpressRequest.ts` to extend `express.Request`
+Add a new interface `interface/IExpressRequest.ts` to extend `express.Request`
 ```typescript
 import { Request } from "express";
 import { EntityManager } from "mikro-orm";
@@ -36,7 +36,7 @@ MONGO_URL: "mongodb://127.0.0.1:27017",
 DB_NAME: "a-json-db"
 ````
 
-Create an entity `a-json.ts` in `mkdir src/entities`
+Create an entity `src/entities/a-json.ts`
 ```typescript
 import { Entity, MongoEntity, SerializedPrimaryKey, PrimaryKey, Property } from "mikro-orm";
 import { ObjectId } from "mongodb";
@@ -135,13 +135,13 @@ async function makeApp(): Promise<express.Application> {
 
 Add [body-parser](https://github.com/expressjs/body-parser) middleware `npm i -s body-parser`, `npm i -D @types/body-parser` and use it in `app.ts`
 ```typescript
-	...
-	// middleware
-	app.use(bodyParser.urlencoded({ extended: false }));
-	app.use(bodyParser.json());
+...
+// middleware
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
-	// routes
-	...
+// routes
+...
 ```
 
 Change `a-json.service.ts`
