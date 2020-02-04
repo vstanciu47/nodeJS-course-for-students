@@ -1,4 +1,4 @@
-# [NodeJs API for a .NET developer](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer)
+# [NodeJs API for a .NET developer](README.md)
 
 
 
@@ -22,18 +22,18 @@ The tutorials are easy to follow and yield immediate results, so have fun buildi
 
 ## TOC
 
-##### [01. About Node.js](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/01-about.md)
+##### [01. About Node.js](docs/01-about.md)
 
-##### [02. The `http` and `https` modules](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/02-http.md)
+##### [02. The `http` and `https` modules](docs/02-http.md)
 
-##### [03. Express](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/03-express.md)
+##### [03. Express](docs/03-express.md)
 
-##### [04. Typescript](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/04-typescript.md)
+##### [04. Typescript](docs/04-typescript.md)
 
-##### [05. Debugging Node.js apps](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/05-debugging.md)
+##### [05. Debugging Node.js apps](docs/05-debugging.md)
 
-##### [06. Modules, packages, libraries](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/06-modules-packages-libraries.md)
+##### [06. Modules, packages, libraries](docs/06-modules-packages-libraries.md)
 
-##### [07. Testing](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/07-testing.md)
+##### [07. Testing](docs/07-testing.md)
 
-##### [08. Mongodb](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/08-mongodb.md)
+##### [08. Mongodb](docs/08-mongodb.md)
