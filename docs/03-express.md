@@ -54,7 +54,8 @@ The files for this project are included in folder `./support/03/`; use them for 
 you can add a VS project to contain this in the IDE, but it's not required.
 3.  add the express module `npm i -s express` => you'll notice a new section created in `package.json` called `dependencies`;
 when cloning a repo, the first thing you need to do is to restore these dependencies, by running `npm install`, or short `npm i`
-4. change `main` value in `package.json` to `src/index.js`; this is the entry point in the app, we'll keep it in the `src` folder
+4. change `main` value in `package.json` to `src/index.js`; this is the entry point in the app, we'll keep it in the `src` folder  
+   We'll also add a `start` script in the `scripts` section in package.json: `"start": "node src/index.js",` 
 5. create folder structure  
    a. `mkdir src` => `src/index.js`, `src/env.js`, `src/app.js`, `src/log.js`  
    b. `mkdir routes` => `src/routes/discovery-client.route.js`, `src/routes/a-json.route.js`  

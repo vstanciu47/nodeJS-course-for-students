@@ -43,54 +43,55 @@ I am using [Visual Studio](https://visualstudio.microsoft.com/downloads/) with "
 but you can also use [VS code](https://code.visualstudio.com/) or any other IDE that you prefer.
 
 ### Convert our Node app to typescript
-Let's make our source files typescript: first copy or rename the entire js project folder from previous step to something like `express-server-ts`, then change all .js files to .ts (there are 9).
-
-Switch to the new dir and try to run `npm start` again. Of course it doesn't work, we've just renamed the `index.js` to `index.ts`.
-So we'll need to compile (or "transpile") the .ts files, using typescript. Let's install the package as dev dependency `npm i -D typescript`.
-Let's also install a dev dependency package to run our app in dev mode `npm i -D ts-node-dev`. This allows us to run the app without pre-transpiling, as it does it automatically for us (it will stop if any errors are found)
-Let's add a new script to package.json: `"ts:node:dev": "ts-node-dev src/index --watch",` and change the `start` script to `npm run ts:node:dev`; since we're here, let's remove the `main` entry, we'll never use it again.
-Try `npm start`...it works again! We've added a `--watch` flag to `ts-node-dev` so when we update any file, it will re-transpile them and restart the server automatically.
+Let's make our source files typescript: first copy or rename the entire js project folder from previous step to something like `express-server-ts`, then change all .js files to .ts (there are 9).  
+Switch to the new dir and try to run `npm start` again. Of course it doesn't work, we've just renamed the `index.js` to `index.ts`.  
+So we'll need to compile (or "transpile") the .ts files, using typescript.  
+Let's install the package as dev dependency `npm i -D typescript`.
+Let's also install a dev dependency package to run our app in dev mode `npm i -D ts-node-dev`.  
+This allows us to run the app without pre-transpiling, as it does it automatically for us (it will stop if any errors are found)  
+Let's add a new script to package.json: `"ts:node:dev": "ts-node-dev src/index --watch",` and change the `start` script to `npm run ts:node:dev`.  
+Since we're here, let's remove the `main` entry, we'll never use it again.  
+Try `npm start`...it works again!  
+We've added a `--watch` flag to `ts-node-dev` so when we update any file, it will re-transpile them and restart the server automatically.
 
 I've mentioned above that running the compiler with no option will not add to much value, so now we want to instruct the compiler to use more strict rules.
 This is done by adding a [`tsconfig.json`](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html) file at the root of the project (where `package.json` is).
 Go ahead and copy the one from `./support/04/`. There are a few options that are I personally use all the time, but for the full list of available options and their meaning, go to the link on top of the file.
 
-Let's add a new script in package.json: `"type:check": "tsc --noEmit --project .",` and update the start script to `"start": "npm run type:check && npm run ts:node:dev",`
-The new script does a "dry run", meaning it does everything except writing the javascript files to disk; we still don't need them because for simplicity, in dev mode we run the app through `ts-node-dev` using the source .ts files.
-We're ready to "transpile" using the typescript comppiler with run `npm run type:check` and boy we're in for a nasty surprise! I can't even count the errors displayed!
-I'm absolutely sure I'm a good developer, I certainly can't make tht many mistakes!
-So our conversion form .js to .ts wasn't this simple, I guess...
+Let's add a new script in package.json: `"type:check": "tsc --noEmit --project .",` and update the start script to `"start": "npm run type:check && npm run ts:node:dev",`  
+The new script does a "dry run", meaning it does everything except writing the javascript files to disk; we still don't need them because for simplicity, in dev mode we run the app through `ts-node-dev` using the source .ts files.  
+We're ready to "transpile" using the typescript comppiler with run `npm run type:check` and boy we're in for a nasty surprise! I can't even count the errors displayed (well, it says at the end `Found 64 errors.`)!  
+I'm absolutely sure I'm a good developer, I certainly can't make tht many mistakes!  
+So our conversion form .js to .ts wasn't this simple, I guess...  
 Let's continue with the conversion:
 - update imports like below, depending on the usage (more about these in [modules, packages, libraries](06-modules-packages-libraries.md))
   - `const x = require("y")` => `import * as x from "y";`
   - `const { x } = require("y")` => `import { x } from "y";`
 - update exports
   - `module.exports.x = x;` => `export { x };`
+  - `module.exports.x = y();` => `const x = y(); export { x };`
   - if more than one object exported, add them to the main export object like this `export { x, y };`
 
-Ok, that took a few minutes. Are we done yet? Run `npm run type:check` again. That looks a bit better. Let's see what's still wrong.
+Ok, that took a few minutes. Are we done yet? Run `npm run type:check` again.  
+That looks a bit better, I get `Found 27 errors`. Let's see what's still wrong.  
+The first error I see is `Could not find a declaration file for module 'express'`. And this makes sense, we've added the package to the project, but all packages are written for javascript and typescript cannot tell what types it uses and needs.  
+For this, type packages are being created separately. Install type packages with `npm i -D @types/express`.  
+We also need to add typings for node's native modules `npm i -D @types/node@12`; I've specified the version of node I want types for, that is v12, which is the LTS version I have installed.  
+Now if we run the check again, we get `Found 20 errors.`  
 
-The first error I see is `Could not find a declaration file for module 'express'`. And this makes sense, we've added the package to the project, but all packages are written for javascript and typescript cannot tell what types it uses and needs.
-
-For this, type packages are being created separately. Install type packages with `npm i -D @types/express`.
-
-We also need to add typings for node's native modules `npm i -D @types/node@12`; I've specified the version of node I want types for, that is v12, which is the LTS version I have installed.
-
-A lot of errors are for `Variable 'x' implicitly has an 'any' type`.
-Type `any` is assumed if no specific type is provided, and we should always forbid this (the rule is specified in `tsconfig.json` with `"noImplicitAny": true,`).
-Type `any` is useful in some edge cases. But it mutes all the benefits of typescript.
-
+Let's continue. A lot of errors are for `Variable 'x' implicitly has an 'any' type`.  
+Type `any` is assumed if no specific type is provided, and we should always forbid this (the rule is specified in `tsconfig.json` with `"noImplicitAny": true,`).  
+Type `any` is useful in some edge cases. But it mutes all the benefits of typescript.  
 We'll add required type declarations to fix `no implicit any` errors:
-- app object in `app.ts` is of type `let app: express.Application;`
-- `req`, `res`, `next` objects in `app.ts`,`a-json.route.ts`, `discovery-client.route.ts` are of types `req: express.Request, res: express.Response, next: express.NextFunction`
-- `err` object in `app.ts` is of type `app.use((err: Error,...`
-- `model` object in `a-json.model.ts` is of type `model = <any>{}`; this is a good example where `any` type can come in handy: when we don't know what data we receive from external sources, forcing us to treat it carefully (using `typeof`, `instanceof`, prop existance checks, etc); in .NET, this behaviour is hidden from us, if a param doesn't take the exact form we declare, the bind doesn't happen at all
-- `message` object in `log.ts` is of type `log(message: Error | string)`. This is a union type where we tell the compiler that the variable can be of either type at runtime.
+- `app.ts` => app object is of type `let app: express.Application;`
+- `app.ts` => err object is of type `app.use((err: Error,...`
+- `app.ts`, `a-json.route.ts`, `discovery-client.route.ts` => `req`, `res`, `next` objects in are of types `req: express.Request, res: express.Response, next: express.NextFunction`
+- `a-json.model.ts` => model object in is of type `model = <any>{}`; this is a good example where `any` type can come in handy: when we don't know what data we receive from external sources, forcing us to treat it carefully (using `typeof`, `instanceof`, prop existance checks, etc); in .NET, this behaviour is hidden from us, if a param doesn't take the exact form we declare, the bind doesn't happen at all
+- `log.ts` => message object in is of type `log(message: Error | string)`. This is a union type where we tell the compiler that the variable can be of either type at runtime.
 
-Run `npm run type:check` again; this time we only see a few errors, that we'll fix next.
-
+Run `npm run type:check` again; we get `Found 7 errors.`, that we'll fix next.  
 In `app.ts` we add and read a property `status` to an `Error` object;
-this is possible in javascript but forbidden in typescript because it can have unpredictable consequences.
+this is possible in javascript but forbidden in typescript because it can have unpredictable consequences.  
 Let's create an interface instead in `interfaces/IExpressError.ts`:
 ```typescript
 export interface IExpressError extends Error {
@@ -106,8 +107,8 @@ const err = new Error("Not Found") as IExpressError;
 app.use((err: IExpressError, ...
 ```
 
-Now we're left with the errors in `a-json.model.ts`.
-The function return works with the compiler, because the return type is inferred.
+Now we're left with the errors in `a-json.model.ts`.  
+The function return works with the compiler, because the return type is inferred.  
 But in the case of the class, it behaves exactly like in C#, it says that props do not exist on the object, so they have to be declared explicitely:
 ```typescript
 class AJsonModel {
@@ -130,10 +131,10 @@ node_modules
 So far we've ensured we don't make *some* mistakes. We will add another great tool to check for code style and consistency, `npm i -D tslint`.
 Tslint works with its own `tslint.json` config, so copy the one from the repo to your project. There are tons of options available, I personally use this configuration for my projects.
 For a list of all options and what they're for, read the official [docs](https://palantir.github.io/tslint/rules/).
-Let's add a new script for this in `package.json`: `"lint": "tslint --project .",` and update the start script to run it `npm run type:check && npm run lint && npm run ts:node:dev`
+Let's add a new script for this in package.json: `"lint": "tslint --project .",` and update the start script to run it `npm run type:check && npm run lint && npm run ts:node:dev`
 Let's see if we wrote good style code: `npm run lint`.
 Not too bad, I have a 4 errors.
-- The trailing white space error is an easy fix.
+- The `trailing whitespace` and `file should end with a newline` errors are easy fix.
 - The forbidden `eval` error in `log.ts`
   - eval is used here to prevent bundlers (that we'll use in production) to clean up 'useless' console.log statements
   - eval is preventing any checks on the code run, so it shouldn't be used
