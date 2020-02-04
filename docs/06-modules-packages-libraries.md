@@ -17,20 +17,19 @@ The same process is happening in Node as well when you run a file.
 
 There are different module loading types available, like `commonjs` used by Node, `amd`, `umd`, `es2015` (or `es6`), `System`, etc.
 The modules use different javascript syntax under the hood.
-For example in `amd`, an module looks like this:
+For example in `amd`, a module looks like this:
 ```javascript
 define(['path/to/my/dependency'], function (mydependency) {
-	// 
+	// mydependency.someExportedThing()
 });
 ```
-So `define` is a function tht gets two params: one is a list of file paths that are coming from `import x from "y"` syntax that we write,
+So `define` is a function that gets two params: one is a list of file paths that are coming from `import * as mydependency from "path/to/my/dependency"` syntax that we write,  
 and the second is a function callback that is the module we wrote and it gets injected with the exported objects (if any) from the dependency.
 
-In `commonjs`, the `define` function is not even available to us, but it's there and it gets us some implicit objects injected, like `module`, `exports`, `global`, etc.
+In `commonjs`, the `define` function is not even available to us, but it's there and it gets us some implicit objects injected, like `module`, `exports`, `global`, `process`, `console`, etc.  
 Also, the syntax for importing dependencies is `require`, like we've used in the js app.
 
-Since we moved to typescript, we've switched to typescript's syntax, `import`.
-
+Since we moved to typescript, we've switched to typescript's syntax, `import`.  
 Typescript uses `import` keyword because that is also the syntax used in `ES6`, and since typescript is a superset of javascript, it also uses it.
 
 Transpiling the .ts takes care of the conversion for us; it uses the `target` prop from the `tsconfog.json` to read the javascript module loading type that we want to produce.
