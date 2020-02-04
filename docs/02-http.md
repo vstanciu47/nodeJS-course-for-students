@@ -34,6 +34,8 @@ In this case, the server would send the same response to all requests; URLs like
 
 To make use of it, the requests must be filtered using the `request` object. Let's see a simple filter based on URL (ignoring the method GET, POST, etc):
 ```javascript
+const fs = require("fs");
+
 // function callback for incoming requests, with basic request filtering
 function onIncomingRequest(requset, response) {
 	if (requset.url === '/') {
@@ -47,7 +49,7 @@ function onIncomingRequest(requset, response) {
 	} else if (requset.url === "/inddex.html") {
 		// read the index.html file from disk, the SYNC way (this blocks current thread until read is complete and must be avoided)
 		// this is only a demo for a simple http server, so we can do it this way
-		const indexHtmlFileContent = fs.readFileSync("/path/to/index.html", "UTF-8");
+		const indexHtmlFileContent = fs.readFileSync("/support/02/index.html", "UTF-8");
 
 		response.writeHead(200, { 'Content-Type': 'text/html' });
 		response.write(indexHtmlFileContent);
@@ -62,7 +64,7 @@ function onIncomingRequest(requset, response) {
 		};
 
 		response.writeHead(200, { 'Content-Type': 'application/json' });
-		response.write(jsonResponse);
+		response.write(JSON.stringify(jsonResponse));
 		response.end();
 	}
 }

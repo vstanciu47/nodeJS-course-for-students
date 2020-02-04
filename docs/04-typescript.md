@@ -22,14 +22,7 @@ console.log(x);
 Save this file as `04.js` and try it `node 04.js`.
 What do you think this will do? Cause an error? No! it will print NaN (not a number) which is a type, thus a "real" value, and even worse it's type is "number" `typeof NaN === "number"` => `true`.
 
-Here's the same example in typescript:
-```typescript
-function timesTwo(v) { return v * 2; }
-var x = timesTwo("one");
-x = x + 1;
-console.log(x);
-```
-I have renamed `04.js` to `04.ts`, that is all it takes to bring *some* of the typescript's capabilities to javascript.
+Rename `04.js` to `04.ts`, that is all it takes to bring *some* of the typescript's capabilities to javascript.
 If I run the typescript compiler with no options, it will just produce the javascript file as above.
 So what is the benefit then? Let's make a couple of changes: specify that the input parameter of function `timesTwo` is number `v: number`, and make the x var a const:
 ```typescript
@@ -48,25 +41,25 @@ I am using [Visual Studio](https://visualstudio.microsoft.com/downloads/) with "
 but you can also use [VS code](https://code.visualstudio.com/) or any other IDE that you prefer.
 
 ### Convert our Node app to typescript
-Let's make our source files typescript: first copy or rename the entire js project folder from previous step something like `express-server-ts`, then change all .js files to .ts (there are 9)
+Let's make our source files typescript: first copy or rename the entire js project folder from previous step to something like `express-server-ts`, then change all .js files to .ts (there are 9).
 
 Switch to the new dir and try to run `npm start` again. Of course it doesn't work, we've just renamed the `index.js` to `index.ts`.
 So we'll need to compile (or "transpile") the .ts files, using typescript. Let's install the package as dev dependency `npm i -D typescript`.
 Let's also install a dev dependency package to run our app in dev mode `npm i -D ts-node-dev`. This allows us to run the app without pre-transpiling, as it does it automatically for us (it will stop if any errors are found)
-Let's add a new script to `package.json`: `"ts:node:dev": "ts-node-dev src/index --watch",` and change the `start` script to `npm run ts:node:dev`; since we're here, let's remove the `main` entry, we'll never use it again.
-Try `npm start`...it works again! We've added a `--watch` flag to `ts-node-dev` so when we update any file, it will re-transpile them and restart the server, giving us the ability to concentrate on writing code.
+Let's add a new script to package.json: `"ts:node:dev": "ts-node-dev src/index --watch",` and change the `start` script to `npm run ts:node:dev`; since we're here, let's remove the `main` entry, we'll never use it again.
+Try `npm start`...it works again! We've added a `--watch` flag to `ts-node-dev` so when we update any file, it will re-transpile them and restart the server automatically.
 
 I've mentioned above that running the compiler with no option will not add to much value, so now we want to instruct the compiler to use more strict rules.
 This is done by adding a [`tsconfig.json`](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html) file at the root of the project (where `package.json` is).
 Go ahead and copy the one from `./support/04/`. There are a few options that are I personally use all the time, but for the full list of available options and their meaning, go to the link on top of the file.
 
-Let's add a new script in `package.json`: `"type:check": "tsc --noEmit --project .",` and update the start script to `"start": "npm run type:check && npm run ts:node:dev",`
+Let's add a new script in package.json: `"type:check": "tsc --noEmit --project .",` and update the start script to `"start": "npm run type:check && npm run ts:node:dev",`
 The new script does a "dry run", meaning it does everything except writing the javascript files to disk; we still don't need them because for simplicity, in dev mode we run the app through `ts-node-dev` using the source .ts files.
 We're ready to "transpile" using the typescript comppiler with run `npm run type:check` and boy we're in for a nasty surprise! I can't even count the errors displayed!
 I'm absolutely sure I'm a good developer, I certainly can't make tht many mistakes!
 So our conversion form .js to .ts wasn't this simple, I guess...
 Let's continue with the conversion:
-- update imports like below, depending on the usage (more about these in next part)
+- update imports like below, depending on the usage (more about these in [modules, packages, libraries](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/06-modules-packages-libraries.md))
   - `const x = require("y")` => `import * as x from "y";`
   - `const { x } = require("y")` => `import { x } from "y";`
 - update exports

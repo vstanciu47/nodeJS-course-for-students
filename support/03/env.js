@@ -3,7 +3,7 @@ module.exports.env = getEnv();
 function getEnv() {
 	// use process.env, process.argv
 	return {
-		PORT: 58080,
+		PORT: 80,
 
 		NODE_ENV: "development",
 

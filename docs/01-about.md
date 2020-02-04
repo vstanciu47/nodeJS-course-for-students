@@ -32,7 +32,7 @@ function fsReadFileCallback(error, fileData) {
 	if (error)
 		console.error(error);
 	else
-		console.log(contents);
+		console.log(fileData);
 }
 ```
 Save this file as `example.js` and run it in a console/terminal: `node example`.

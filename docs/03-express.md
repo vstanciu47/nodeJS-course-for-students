@@ -49,29 +49,26 @@ https.createServer({ key: privateKey, cert: certificate }, app)
 ## Express quick setup
 
 The files for this project are included in folder `./support/03/`; use them for reference.
-- create a folder for the first project `mkdir express-server-js & cd express-server-js`
-- create the "heart" of the Node project `npm init -y` => this produces a `package.json` with default values; this is all you ever need;
+1. create a folder for the first project `mkdir express-server-js & cd express-server-js`
+2. create the "heart" of the Node project `npm init -y` => this produces a `package.json` with default values; this is all you ever need;
 you can add a VS project to contain this in the IDE, but it's not required.
-- add the express module `npm i -s express` => you'll notice a new section created in `package.json` called `dependencies`;
+3.  add the express module `npm i -s express` => you'll notice a new section created in `package.json` called `dependencies`;
 when cloning a repo, the first thing you need to do is to restore these dependencies, by running `npm install`, or short `npm i`
-- change `main` value in `package.json` to `src/index.js`; this is the entry point in the app, we'll keep it in the `src` folder
-- `mkdir src & cd src`
-  - add `index.js`, `env.js`, `app.js`, `log.js`
-- `mkdir routes`
-  - add `routes/discovery-client.route.js`, `routes/a-json.route.js`
-- `mkdir services`
-  - add `services/a-json.service.js`
-- `mkdir data`
-  - add `data/a-json.data.js`
-- `mkdir models`
-  - add `models/a-json.model.js`
-- `cd ..`
-- run `node .`; the `.` here means the current folder; since the folder contains a `package.json`, it will be used first for reading the project setup;
+4. change `main` value in `package.json` to `src/index.js`; this is the entry point in the app, we'll keep it in the `src` folder
+5. create folder structure
+   a. `mkdir src` => `src/index.js`, `src/env.js`, `src/app.js`, `src/log.js`
+   b. `mkdir routes` => `src/routes/discovery-client.route.js`, `src/routes/a-json.route.js`
+   c. `mkdir services` => `src/services/a-json.service.js`
+   d. `mkdir data` => `src/data/a-json.data.js`
+   e. `mkdir models` => `src/models/a-json.model.js`
+   f. `cd ..`
+6. run `node .`; the `.` here means the current folder; since the folder contains a `package.json`, it will be used first for reading the project setup;
 the entry point is the one specified in `main`; you could also run `node src/index.js`, it is esentially the same thing; and yet another way to run the app is with `npm run start` or `npm start`; `npm` reads the `scripts` section of the `package.json` and looks for the `start` script and executes it. After running the command, the console should display the message `development server listening on port 58080`;
 
-- open browser to http://localhost:58080/ => 404 (no listener registered for route "/")
-- go to http://localhost:58080/discovery/client => server settings that clients would need (this is the only URL they would need to hardcode)
-- go to http://localhost:58080/api/json => the json response for this route
+7. open browser 
+   a. go to http://localhost/ => 404 (no listener registered for route "/")
+   b. go to http://localhost/discovery/client => server settings that clients would need (this is the only URL they would need to hardcode)
+   c. go to http://localhost/api/json => the json response for this route
 
 Now let's look at `src/app.js` to explain what happened. As I mentioned, there is no magic, so every response (including the 404) is written by us.
 
