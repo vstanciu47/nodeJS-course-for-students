@@ -18,7 +18,7 @@ In the browser window that opens, in the console, you should see the *normal* no
 ![Chrome Debugger](assets/chrome-debugger.png)  
 We can see our app with 2 sections:  
 **no domain** contains Node's native modules used by our app (e.g. `fs.js`, `http.js`)  
-**file://** contains two folders: one for our source .ts files and a temp dir where `ts-node-dev` automatically transpiles our .ts files into a .js bundle file
+**file://** contains two folders: one for our source .ts files and a temp created by `ts-node-dev` to run .ts to .js transpilation
 
 
 
