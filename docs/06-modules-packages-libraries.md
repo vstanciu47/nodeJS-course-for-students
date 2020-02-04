@@ -1,4 +1,4 @@
-# [NodeJs API for a .NET developer](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer)
+# [NodeJs API for a .NET developer](../README.md)
 
 
 
@@ -46,10 +46,12 @@ This is just common terminology, there is no real standard for naming these, so 
 Did you notice that a `node_modules` folder got created as soon as we installed the first "package" / "library" / "module" ?
 We installed `express` "library" and `npm` saved it under `node_modules` folder. So `npm` names all just "modules".
 
-Have you noticed that although we added just one "library", a lot more "node modules" appeared? This is because `express` has its own dependencies that need to be added locally for it to work. Those aren't listed automatically in `package.json` because we're not managing them, `npm` is. This is BTW why `node_modules` grows that big, dependencies require extra dependencies.
+Have you noticed that although we added just one "library", a lot more "node modules" appeared?
+This is because `express` has its own dependencies that need to be added locally for it to work.
+Those aren't listed automatically in `package.json` because we're not managing them, `npm` is. This is BTW why `node_modules` grows that big, dependencies require extra dependencies.
 
 In production, we use a bundler who's job is to extract only those functions that are actually used and put them into a single file, greatly reducing the size and the number of files that the app will need to load.
 
 
 
-[Next: testing](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/07-testing.md)
+[Next: testing](07-testing.md)

@@ -1,4 +1,4 @@
-# [NodeJs API for a .NET developer](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer)
+# [NodeJs API for a .NET developer](../README.md)
 
 
 
@@ -8,9 +8,11 @@ Note: there are no .ts files being checcked in from now on so you can do the exe
 
 ### Quick intro
 So far we have written pure javascript, which is what Node understands.
-Javascript was born many years ago and the original specs were defined in just three days. Future iterations of the specs added more features, but because the web was already using this rather new technology, the existing specs were not modified, to maintain backwards compatibility.
+Javascript was born many years ago and the original specs were defined in just three days.
+Future iterations of the specs added more features, but because the web was already using this rather new technology, the existing specs were not modified, to maintain backwards compatibility.
 For this reason, javascript can still "do" things that must be avoided.
-[Typescript](https://www.typescriptlang.org/) was created to bring the order to javascript language; it's top two features are the ability to add types to js, but also to guard against unpredictable usage of the language.
+[Typescript](https://www.typescriptlang.org/) was created to bring the order to javascript language;
+it's top two features are the ability to add types to js, but also to guard against unpredictable usage of the language.
 
 Here's an example that is valid in javascript:
 ```javascript
@@ -59,7 +61,7 @@ We're ready to "transpile" using the typescript comppiler with run `npm run type
 I'm absolutely sure I'm a good developer, I certainly can't make tht many mistakes!
 So our conversion form .js to .ts wasn't this simple, I guess...
 Let's continue with the conversion:
-- update imports like below, depending on the usage (more about these in [modules, packages, libraries](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/06-modules-packages-libraries.md))
+- update imports like below, depending on the usage (more about these in [modules, packages, libraries](06-modules-packages-libraries.md))
   - `const x = require("y")` => `import * as x from "y";`
   - `const { x } = require("y")` => `import { x } from "y";`
 - update exports
@@ -159,4 +161,4 @@ Run `npm start` again to see the complete check running (hopefully with no error
 
 
 
-[Next: debugging Node.js apps](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/05-debugging.md)
+[Next: debugging Node.js apps](05-debugging.md)

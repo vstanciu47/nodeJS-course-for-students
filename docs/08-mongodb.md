@@ -1,4 +1,4 @@
-# [NodeJs API for a .NET developer](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer)
+# [NodeJs API for a .NET developer](../README.md)
 
 
 

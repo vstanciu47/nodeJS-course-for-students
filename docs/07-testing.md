@@ -1,4 +1,4 @@
-# [NodeJs API for a .NET developer](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer)
+# [NodeJs API for a .NET developer](../README.md)
 
 
 
@@ -8,7 +8,8 @@
 
 ### Basics
 We'll set up unit tests for our app. Let's add a test runner package: `npm i -D jasmine`.
-I prefer [`jasmine`](https://jasmine.github.io/setup/nodejs.html), but many others are available (using different syntax, of course). This choice influences both the test file syntax and how they're run, so it's better to decide upfront what library to use and then stick to it, as changing it later will mean updating all test files and possibly eved the structure.
+I prefer [`jasmine`](https://jasmine.github.io/setup/nodejs.html), but many others are available (using different syntax, of course).
+This choice influences both the test file syntax and how they're run, so it's better to decide upfront what library to use and then stick to it, as changing it later will mean updating all test files and possibly eved the structure.
 
 We'll add the definition files for jasmine (this should become a habbit, for every package, install the typings)
 `npm i -D @types/jasmine`
@@ -221,4 +222,4 @@ I've also saved unit and integration tests beside their actual code files, to be
 
 
 
-[Next: mongodb](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/08-mongodb.md)
+[Next: mongodb](08-mongodb.md)

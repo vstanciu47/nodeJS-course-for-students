@@ -1,4 +1,4 @@
-# [NodeJs API for a .NET developer](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer)
+# [NodeJs API for a .NET developer](../README.md)
 
 
 
@@ -16,4 +16,4 @@ You should already see the node console messages in chrome console; you can debu
 
 
 
-[Next: modules, packages, libraries](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/06-modules-packages-libraries.md)
+[Next: modules, packages, libraries](06-modules-packages-libraries.md)

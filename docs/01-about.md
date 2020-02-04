@@ -1,4 +1,4 @@
-# [NodeJs API for a .NET developer](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer)
+# [NodeJs API for a .NET developer](../README.md)
 
 
 
@@ -49,4 +49,4 @@ For now, just consider that there is only one thread and you don't want to keep 
 
 
 
-[Next: http module](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/02-http.md)
+[Next: http module](02-http.md)

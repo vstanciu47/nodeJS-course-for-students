@@ -1,4 +1,4 @@
-# [NodeJs API for a .NET developer](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer)
+# [NodeJs API for a .NET developer](../README.md)
 
 
 
@@ -80,4 +80,4 @@ This can be tedious and overwhelming, so for this reason, in real life, we use a
 
 
 
-[Next: express module](https://code.waters.com/bitbucket/users/rovian/repos/nodejs-api-for-a-.net-developer/browse/docs/03-express.md)
+[Next: express module](03-express.md)
