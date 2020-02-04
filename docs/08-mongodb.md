@@ -6,11 +6,11 @@
 
 Download and install locally [MongoDB Community Server](https://www.mongodb.com/download-center/community)
 
-![Mongo Setup 1](mongo-setup-1.png)
+![Mongo Setup 1](assets/mongo-setup-1.png)
 
 If you choose to run it as service, verify it runs correctly
 
-![Mongo Setup 2](mongo-setup-2.png)
+![Mongo Setup 2](assets/mongo-setup-2.png)
 
 Could install a db management tool for it, like [Compass](https://www.mongodb.com/download-center/compass).
 
