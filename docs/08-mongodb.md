@@ -300,7 +300,7 @@ function getResponseSpyMock(): Response {
 }
 ```
 Then replace `a-json.route.test.ts` with the new content:
-```
+```typescript
 import { Router } from "express";
 import { noCallThru } from "proxyquire";
 import { getRouterMock, getResponseSpyMock, getNextFunctionSpyMock } from "../../test/express-router-test.helper";
