@@ -16,8 +16,8 @@ We'll add the definition files for jasmine (this should become a habbit, for eve
 
 We can run the package now with `node node_modules/jasmine/bin/jasmine`, and no surprise there, we see a `No specs found` message.
 `jasmine` works with javascript, so we would have to write .js files for it to run, but we want to use typescript (and needless to say, we should't use js anymore).
-We'll use `ts-node-dev` to do the compilation behind the scene for us, so add this to `scripts` section of `package.json`: `"test:unit": "ts-node-dev node_modules/jasmine/bin/jasmine --config=test/config.unit.jasmine"`.
-While we're at it, let's finally change the `test` script: `"test": "npm run test:unit"`
+We'll use `ts-node-dev` to do the compilation behind the scene for us, so add this to `scripts` section of package.json: `"test:unit": "ts-node-dev node_modules/jasmine/bin/jasmine --config=test/config.unit.jasmine",`.
+While we're at it, let's finally change the `test` script: `"test": "npm run test:unit",`
 
 `mkdir test` and add the config file in it `test/config.unit.jasmine.ts`
 ```typescript
@@ -56,68 +56,71 @@ Now add another unit test file `src/data/a-json.data.test.ts` and run test again
 This is not as simple anymore, as the module under test has its own dependencies, so these can no longer be tested as units, so they're becoming integration tests.
 If we want to keep the dependency chain, we'll rename this file `a-json.data.it.test.ts`, so we know it is integration test.
 
-To mock the dependencies of the modules under test, we'll use `npm i -D proxyquire @types/proxyquire`. Could use other modules for this, like `rewire`.
-Now we can add the unit test `a-json.data.unit.test.ts`, where we mock dependencies.
-Let's see how mocking works.
-In `a-json.data.it.test.ts`, we import the actual implementation for `a-json.model` dependency.
+To mock the dependencies of the modules under test, we'll use `npm i -D proxyquire @types/proxyquire`.
+Duplicate the previous test `a-json.data.it.test.ts` as `a-json.data.test.ts` and mock the dependencies:  
+Replace the dependency `import * as aJsonData from "./a-json.data";` with the mocker package `import * as proxyquire from "proxyquire";`  
+Use the mocker package to import the dependency and "fake" its data:
 ```typescript
-import { getAJson } from "./a-json.data";
-```
-This is a simple use case, `getAJson` could get the data from a db that doesn't exist on development environment.
-In our case, `a-json.data` imports `a-json.model` which is what we want to mock.
-
-We use `proxyquire` to import `a-json.data` and overwrite its imported module `../models/a-json.model`with a that we can manipulate:
-```typescript
-import * as proxyquire from "proxyquire";
-
 describe("a-json-data", () => {
 	// "./a-json.data" is the file that we're testing; it should be imported as reference, but we need to mock its dependencies
 	// "../models/a-json.model" is a dependency of the file we're testing, and its export is aJsonModel function and AJsonModel class
 	// instead of require("./a-json.data") or import ... from "./a-json.data", we use proxyquire("file", mocks)
-	const aJsonModel: { getAJson(): { [key: string]: string } } = proxyquire(
+	const aJsonData: { getAJson(): { [key: string]: string } } = proxyquire(
 		"./a-json.data",
 		{
 			"../models/a-json.model": {
-				aJsonModel: () => ({ mockKey: "mock value" }),
+				aJsonModel: () => ({ key1: "value 1" }),
 				AJsonModel: class AJsonModelMock {
-					mockKey: any;
-					constructor() { this.mockKey = "mock value"; }
+					key1: any;
+					constructor() { this.key1 = "value 1"; }
 				}
 			}
 		}
 	);
 	...
-});
+}
 ```
+We are still importing `a-json.data`, but not using the actual `require` or `import` syntax, but through `proxyquire`.  
+If we look in `a-json.data`, we see that it imports another module `a-json.model`.  
+This is a simple usage, but you can imagine that this may be a call to the database and we don't want to do that in a unit test.  
+Instead, we tell `proxyquire` to "fake" this dependency and use the mock object instead, that we can manipulate in the test.  
+
 With this we can even mock Node's native modules, the same way, e.g. for `fs.writeFile()` if we want to skip this in the test.
+
+
 
 Let's spice up a little bit and add a new unit test, this time for a route `a-json.route.test.ts`.
 This is where things get interesting. We want to test the callback functions for each path registered,
 however these callbacks are not exported so they can't be mocked directly, we need to hack the route builder.
 `a-json.route.ts` now looks like this:
 ```typescript
+...
 const aJsonRouter = express.Router();
-module.exports.aJsonRouter = aJsonRouter;
+export { aJsonRouter };
 ...
 ```
-When this file is imported, it is executed, so `aJsonRouter` is created the first time file is imported.
-We sould avoid having executing code like this, instead we should use functions:
-```typescript
-export { setAJsonRoute };
-
-function setAJsonRoute(router: Router): Router {
-	...
-	return router;
-}
-```
-We now export a function that takes the route param, changes it and returns it.
-We no longer need the `express` reference, we'll change the import to dereference only the interfaces:
+When this file is imported, it is executed, so `aJsonRouter` is created the first time file is imported. We sould avoid having executing code like that because it cannot be tested and it can have unpredictable consequences.  
+Let's update `a-json.route.ts` to make it testable:
 ```typescript
 import { Router, Request, Response, NextFunction } from "express";
-```
-and change their usage so they don't point to the container object anymore (e.g. `express.Request` => `Request`).
+import * as aJsonService from "../services/a-json.service";
 
-We'll also have to change `app.ts` and pass in the router object
+export function setAJsonRoute(router: Router): Router {
+	router.get("/", getAJson);
+	return router;
+}
+
+function getAJson(_req: Request, res: Response, next: NextFunction) {
+	try {
+		const jsonData = aJsonService.getAJson();
+		return res.json(jsonData);
+	} catch (ex) {
+		return next(ex);
+	}
+}
+```
+We now export a function that requires the route object passed in as param, changes it and returns it.  
+We'll also have to change `app.ts` to import the new function, create the router object and pass it
 ```typescript
 import { setAJsonRoute } from "./routes/a-json.route";
 
@@ -125,21 +128,28 @@ function makeApp() {
 	app.use(env.A_JSON_ROUTE, setAJsonRoute(express.Router()));
 }
 ```
-With these changes in place, we can write our test and inject a mock for the router
+With these changes in place, our app should work just as before, go ahead and try it `npm start`.  
+Now let's try the tests again `npm run test:unit`...it fails! Why?  See if you can make any sense of the error:  
+`TypeError: routes./ is not a function` `at UserContext.<anonymous> (D:\Development\_ts\src\routes\a-json.route.test.ts:53:14)`  
+The tests try to access properties of `routes` which don't exist; `routes` is set on line 21 as an empty object literal!  
+It should get populated with the data. For this, we need to mock the router:
 ```typescript
-// mock the router object and the methods it defines, so we can get reference to their callbacks
-const router = <Router><any>{
-	get: (path: string, cb: (req: Request, res: Response, next: NextFunction) => any) => routes[path] = cb
-};
+	// mock the router object and the methods it defines, so we can get reference to their callbacks
+	const router = <Router><any>{
+		get: (path: string, cb: (req: Request, res: Response, next: NextFunction) => any) => routes[path] = cb
+	};
 ```
+So in `a-json.route`, the `setAJsonRoute` function takes a router object and adds listners for routes; that's what we need to mock.  
+We use this mock to populate the routes object! Now we know the routes and the callback functions and we can test their logic.
+We use `beforeAll` in the test to call `setAJsonRoute` once per suite.
+The tests manipulate the service mock `aJsonService.getAJson` to test the success or failure of the route.
 
-Now let's look at the new test we added: we're mocking the service dependency, and in `beforeAll` we're calling the `setAJsonRoute` function with the `router` mock object.
-The `router` mock is used to obtain references to the callback functions for the paths defined in the route file.
-The tests manipulate the service mock to test the success or failure of the route.
+Let's set up a test abstraction for mocking: `test/express-router-test.helper.ts`.  
+It provides an easy way to test all route files without repeating code.
 
-We'll do the same for `discovery-client.route.test.ts`, only this time we'll abstract out the router mock set up in `test/express-router-test.helper.ts`, because we will use it for all routes.
-We'll also create helpers for creating `Response` object mocks and `NextFunction` function mocks.
-We'll set up `jasmine` spies, which are just functions that track calls to other functions in a container, e.g. `{ trackMe: () => ... }`.
+Go ahead and update `discovery-client.route.ts` and `app.ts` to use injectable router object, just like we did for `a-json.route.ts`.  
+For `discovery-client.route.test.ts`, we will use the mock providers from the helper and use `jasmine` spies.  
+Spies are just functions that track calls to other functions in a container, e.g. `{ trackMe: () => ... }`.  
 The tests can now be written with a lot less noise:
 ```typescript
 const next = getNextFunctionSpyMock();

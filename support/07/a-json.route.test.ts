@@ -1,4 +1,4 @@
-import { Router, Request, Response, NextFunction } from "express";
+import { Router } from "express";
 import { noCallThru } from "proxyquire";
 
 const proxyquire = noCallThru();
@@ -21,9 +21,7 @@ describe("a-json.route", () => {
 	const routes: { [path: string]: Function } = {};
 
 	// mock the router object and the methods it defines, so we can get reference to their callbacks
-	const router = <Router><any>{
-		get: (path: string, cb: (req: Request, res: Response, next: NextFunction) => any) => routes[path] = cb
-	};
+	const router = <Router><any>{};
 
 	// build router; the routes will now contain all paths and their callbacks
 	// all we have to do now is call the callbacks with the desired params to test behaviour

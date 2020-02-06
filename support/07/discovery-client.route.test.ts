@@ -7,7 +7,7 @@ const proxyquire = noCallThru();
 describe("discovery-client.route", () => {
 	const envFile = { env: {} };
 
-	const discoveryClientRoute: { setDiscoveryClientRouter(router: Router): Router } = proxyquire(
+	const discoveryClientRoute: { setDiscoveryClientRoute(router: Router): Router } = proxyquire(
 		"./discovery-client.route",
 		{
 			"../env": envFile
@@ -16,7 +16,7 @@ describe("discovery-client.route", () => {
 
 	const { router, routes } = getRouterMock();
 
-	beforeAll(() => discoveryClientRoute.setDiscoveryClientRouter(router));
+	beforeAll(() => discoveryClientRoute.setDiscoveryClientRoute(router));
 
 	describe("'GET /'", () => {
 		it("route is set up", () => {
@@ -30,7 +30,6 @@ describe("discovery-client.route", () => {
 
 			routes["GET"]["/"](undefined, res, undefined);
 
-			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.json).toHaveBeenCalledWith({ jsonRoute: "A_JSON_ROUTE" });
 		});
 
