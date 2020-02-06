@@ -176,10 +176,10 @@ const random = true;
 export { spec_dir, spec_files, stopSpecOnExpectationFailure, random };
 ```
 
-Add a new script in `package.json`: "test:e2e": `"ts-node-dev node_modules/jasmine/bin/jasmine --config=test/config.e2e.jasmine",`.
+Add a new script in package.json: `"test:e2e": "ts-node-dev node_modules/jasmine/bin/jasmine --config=test/config.e2e.jasmine",`.
 Update the `test` script as well: `"test": "npm run test:unit && npm run test:e2e"`.
 
-Add a test file: `test/get-discovery-client.e2e.test.ts`.
+Create an e2e test: `test/get-discovery-client.e2e.test.ts`.
 In it, we import the app maker function and test a single route.
 ```typescript
 import * as supertest from "supertest";
@@ -192,9 +192,10 @@ describe(`GET ${env.DISCOVERY_CLIENT_ROUTE}`, () => it("success", done =>
 		.expect(200, { jsonRoute: env.A_JSON_ROUTE }, done)
 ));
 ```
+Run `npm run test:e2e` or the full suite `npm test`.  
 
-
-This tehnique can be used for integration tests as well, but instead of importing the whole app already made, we need to make one and mount a single route:
+Using this tehnique we can do integration tests as well.  
+Create `src/routes/discovery-client.route.it.test.ts`. Instead of importing the whole app already made, we make one and mount a single route:
 ```typescript
 // integration test example for a single route, with 'supertest'
 // when routes are doing too much, be free to use `proxyquire` instead of import/require to mock the deps down the chain
@@ -202,7 +203,7 @@ This tehnique can be used for integration tests as well, but instead of importin
 import * as express from "express";
 import * as supertest from "supertest";
 import { env } from "../env"
-import { setDiscoveryClientRouter } from "./discovery-client.route";
+import { setDiscoveryClientRoute } from "./discovery-client.route";
 
 describe(`GET ${env.DISCOVERY_CLIENT_ROUTE}`, () => {
 	let app: express.Application;
@@ -210,7 +211,7 @@ describe(`GET ${env.DISCOVERY_CLIENT_ROUTE}`, () => {
 	beforeEach(() => app = express());
 
 	it("success", done => {
-		app.use(env.DISCOVERY_CLIENT_ROUTE, setDiscoveryClientRouter(express.Router()));
+		app.use(env.DISCOVERY_CLIENT_ROUTE, setDiscoveryClientRoute(express.Router()));
 
 		supertest(app)
 			.get(env.DISCOVERY_CLIENT_ROUTE)
@@ -218,7 +219,7 @@ describe(`GET ${env.DISCOVERY_CLIENT_ROUTE}`, () => {
 	});
 });
 ```
-You can now save this integration test as `src/routes/discovery-client.route.it.test` and run the whole batch `npm test`.
+You can now save this integration test and run the whole batch `npm test`.
 
 We now have two rounds of tests, that can be run together or separately, without complicated setup, extra projects, etc.
 
