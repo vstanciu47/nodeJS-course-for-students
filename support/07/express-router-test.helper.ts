@@ -7,7 +7,7 @@ function getRouterMock() {
 
 	const addRoute = (method: string, path: string, callback: Function) => {
 		routes[method] = routes[method] || {};
-		routes["GET"][path] = callback;
+		routes[method][path] = callback;
 	};
 
 	const router = <Router><any>{
