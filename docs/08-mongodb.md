@@ -258,18 +258,12 @@ async function postAJson(req: IExpressRequest, res: Response, next: NextFunction
 At this stage it's clear that we're no longer using `models` or `data` folders, so we can remove them.
 
 Try it!
-- do a post to `/api/json` with something like `{ "key1": "xxxxxxxx", "key 2": "yyyyyyy" }` => 201 (with item details)  
-![Postman Post](assets/postman-post.png)
-- re-do the same post => 500 (item already exists)  
-![Postman Post Repeat](assets/postman-post-repeat.png)
-- do a post with no body or with an item that has no key1 param => 500 (invalid params)  
-![Postman Post Invalid](assets/postman-post-invalid.png)
-- do a get `/api/json?key1=xxxxxxxx` => 200 (with item details)  
-![Postman Get](assets/postman-get.png)
-- do a get `/api/json` => 500 (invalid params)  
-![Postman Get Invalid](assets/postman-get-invalid.png)
-- do a get `/api/json?key1=aaaaaa` => 404 (item not found)  
-![Postman Get 404](assets/postman-get-404.png)
+- `curl -X POST -iH "Content-Type: application/json" -d "{\"key1\":\"xxxxxxxx\"}" http://localhost/api/json` => **201** (with item details)  
+- `curl -X POST -iH "Content-Type: application/json" -d "{\"key1\":\"xxxxxxxx\"}" http://localhost/api/json` => **500** (item already exists)  
+- `curl -X POST -iH "Content-Type: application/json" http://localhost/api/json                             ` => **500** (invalid params)  
+- `curl -i http://localhost/api/json?key1=xxxxxxxx` => **200** (with item details)  
+- `curl -i http://localhost/api/json              ` => **500** (invalid params)  
+- `curl -i http://localhost/api/json?key1=aaaaaa  ` => **404** (item not found)  
 
 
 
@@ -315,7 +309,7 @@ describe("a-json.route", () => {
 	// this is empty now because it will be asigned different values per test
 	const aJsonService: { getAJson(): { [key: string]: string } | Error | null } = <any>{};
 
-	class EntityManager { };
+	class EntityManager { }
 
 	const aJsonRoute: { setAJsonRoute(router: Router): Router } = proxyquire(
 		"./a-json.route",
@@ -353,7 +347,7 @@ describe("a-json.route", () => {
 			query: {}
 		};
 		const next = getNextFunctionSpyMock();
-		aJsonService.getAJson = () => { throw err };
+		aJsonService.getAJson = () => { throw err; };
 
 		await routes["GET"]["/"](req, undefined, next);
 
