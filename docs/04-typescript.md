@@ -95,14 +95,14 @@ this is possible in javascript but forbidden in typescript because it can have u
 Let's create an interface instead in `interfaces/IExpressError.ts`:
 ```typescript
 export interface IExpressError extends Error {
-	status?: number; // the question mark doesn't meam nullable like in .NET, it means it can be missing (not present at all)
+	status?: number; // the question mark doesn't mean nullable like in .NET, it means it can be missing (not present at all)
 }
 ```
 import it, and use it:
 ```typescript
 import { IExpressError } from "./interfaces/IExpressError";
 ...
-const err = new Error("Not Found") as IExpressError;
+const err = new Error("Not Found") as IExpressError; // could have created a full ExpressError class with a constructor to extend Error instead of the interface
 ...
 app.use((err: IExpressError, ...
 ```
