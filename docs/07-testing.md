@@ -99,7 +99,7 @@ const aJsonRouter = express.Router();
 export { aJsonRouter };
 ...
 ```
-When this file is imported, it is executed, so `aJsonRouter` is created the first time file is imported. We sould avoid having executing code like that because it cannot be tested and it can have unpredictable consequences.  
+When this file is imported, it is executed, so `aJsonRouter` is created the first time file is imported. We should avoid having executing code like that because it cannot be tested and it can have unpredictable consequences.  
 Let's update `a-json.route.ts` to make it testable:
 ```typescript
 import { Router, Request, Response, NextFunction } from "express";
