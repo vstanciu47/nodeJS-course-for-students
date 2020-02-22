@@ -31,7 +31,8 @@
 		"noEmitHelpers": false,
 		"allowSyntheticDefaultImports": true,
 		"forceConsistentCasingInFileNames": true,
-		"pretty": true
+		"pretty": true,
+		"typeRoots": [ "node_modules/@types" ]
 	},
 	"exclude": [ "node_modules", "bin", "obj" ]
 }
