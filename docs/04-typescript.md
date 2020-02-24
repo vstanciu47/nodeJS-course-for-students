@@ -149,14 +149,6 @@ Not too bad, I have a 4 errors.
 		// tslint:enable
 	}
 	```
-- The use before declaration in `a-json.model`
-  - it can be ignored, because classes are just functions that are defined by js engine on the first compile stage, so they're made available when they exist
-  - go ahead and disable the `no-use-before-declare` rule for the export line alone
-	```typescript
-	// tslint:disable:no-use-before-declare
-	export { aJsonModel, AJsonModel };
-	// tslint:enable
-	```
 
 Run `npm start` again to see the complete check running (hopefully with no errors) and server starting up again in watch mode.
 
