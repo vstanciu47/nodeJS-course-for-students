@@ -6,17 +6,15 @@
 
 ### Prerequisites
 
-Download and install locally [MongoDB Community Server](https://www.mongodb.com/download-center/community)
+Download and install locally [MongoDB Community Server](https://www.mongodb.com/download-center/community)  
+![Mongo Setup 1](assets/mongo-setup-1.png)  
+Could add mongo bin dir path `C:\Program Files\MongoDB\Server\4.2\bin` to env PATH, so that `mongo`, `mongod` cmd are available.  
 
-![Mongo Setup 1](assets/mongo-setup-1.png)
+If you choose to run it as service, verify it runs correctly  
+![Mongo Setup 2](assets/mongo-setup-2.png)  
 
-If you choose to run it as service, verify it runs correctly
-
-![Mongo Setup 2](assets/mongo-setup-2.png)
-
-Could install a db management tool for it, like [Compass](https://www.mongodb.com/download-center/compass)
-
-![Mongo Setup 3](assets/mongo-setup-3.png)
+Could install a db management tool for it, like [Compass](https://www.mongodb.com/download-center/compass)  
+![Mongo Setup 3](assets/mongo-setup-3.png)  
 
 ### Express app
 
