@@ -7,7 +7,7 @@
 First we add a feature usefull for debugging: in `tsconfig.json`, change `"sourceMap": true,`.
 This will create .js.map files that connect the source .ts files to the emitted .js files, to allow debugging into the source files, not generated files.
 
-Next we enable the inspection option to out our server: in `package.config`, update script `"ts:node:dev": "ts-node-dev --inspect --watch -- src/index",`
+Next we enable the inspection option to out our server: in `package.json`, update script `"ts:node:dev": "ts-node-dev --inspect --watch -- src/index",`
 
 Run `npm start` as usual. You should see a message like `Debugger listening on ws://127.0.0.1 ...`
 
