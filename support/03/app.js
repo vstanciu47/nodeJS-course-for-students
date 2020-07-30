@@ -24,7 +24,7 @@ function makeApp() {
 	});
 
 	// 500
-	app.use((err, _req, res) => {
+	app.use((err, _req, res, _next) => {
 		res.status(err.status || 500).send(env.NODE_ENV === "development" ? err : {});
 	});
 
