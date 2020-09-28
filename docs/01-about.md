@@ -27,7 +27,7 @@ const fs = require("fs");
 fs.readFile("path/to/file", "UTF-8", fsReadFileCallback);
 
 // first param of a callback is an error object, in case the op failed, the 2+ param are the result/success of the op
-// in practice, the first thins to check in a callback is if error != undefined, if so op failed
+// in practice, the first thing to check in a callback is if error != undefined, if so op failed
 function fsReadFileCallback(error, fileData) {
 	if (error)
 		console.error(error);
