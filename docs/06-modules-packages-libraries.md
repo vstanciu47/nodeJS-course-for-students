@@ -1,7 +1,5 @@
 # [NodeJs API for a .NET developer](../README.md)
 
-
-
 ## 06. Modules, packages, libraries
 
 ### Modules
@@ -18,11 +16,13 @@ The same process is happening in Node as well when you run a file.
 There are different module loading types available, like `commonjs` used by Node, `amd`, `umd`, `es2015` (or `es6`), `System`, etc.
 The modules use different javascript syntax under the hood.
 For example in `amd`, a module looks like this:
+
 ```javascript
 define(['path/to/my/dependency'], function (mydependency) {
-	// mydependency.someExportedThing()
+    // mydependency.someExportedThing()
 });
 ```
+
 So `define` is a function that gets two params: one is a list of file paths that are coming from `import * as mydependency from "path/to/my/dependency"` syntax that we write,  
 and the second is a function callback that is the module we wrote and it gets injected with the exported objects (if any) from the dependency.
 
@@ -35,6 +35,7 @@ Typescript uses `import` keyword because that is also the syntax used in `ES6`, 
 Transpiling the .ts takes care of the conversion for us; it uses the `target` prop from the `tsconfog.json` to read the javascript module loading type that we want to produce.
 
 ### Packages, libraries
+
 Modules are considered files that we write ourselves for the project and files that come with Node itself.
 Packages or libraries are third party dependencies that we add to a project, but native modles are also refered to as packages or libraries.
 Packages or libraries are also modules, and sometimes people refer to them as 'modules'.
@@ -42,6 +43,7 @@ Packages or libraries are also modules, and sometimes people refer to them as 'm
 This is just common terminology, there is no real standard for naming these, so you will most likely encounter all terms used for all types of dependencies.
 
 ### node_modules
+
 Did you notice that a `node_modules` folder got created as soon as we installed the first "package" / "library" / "module" ?
 We installed `express` "library" and `npm` saved it under `node_modules` folder. So `npm` names all just "modules".
 
@@ -50,7 +52,5 @@ This is because `express` has its own dependencies that need to be added locally
 Those aren't listed automatically in `package.json` because we're not managing them, `npm` is. This is BTW why `node_modules` grows that big, dependencies require extra dependencies.
 
 In production, we use a bundler who's job is to extract only those functions that are actually used and put them into a single file, greatly reducing the size and the number of files that the app will need to load.
-
-
 
 [Next: testing](07-testing.md)

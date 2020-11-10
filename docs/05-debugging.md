@@ -1,7 +1,5 @@
 # [NodeJs API for a .NET developer](../README.md)
 
-
-
 ## 05. Debugging Node.js apps
 
 First we add a feature usefull for debugging: in `tsconfig.json`, change `"sourceMap": true,`.
@@ -19,9 +17,5 @@ In the browser window that opens, in the console, you should see the *normal* no
 We can see our app with 2 sections:  
 **no domain** contains Node's native modules used by our app (e.g. `fs.js`, `http.js`)  
 **file://** contains two folders: one for our source .ts files and a temp created by `ts-node-dev` to run .ts to .js transpilation
-
-
-
-
 
 [Next: modules, packages, libraries](06-modules-packages-libraries.md)

@@ -1,7 +1,5 @@
 # [NodeJs API for a .NET developer](../README.md)
 
-
-
 ## 03. Express
 
 The most used module for setting up a Node web server is [express](https://expressjs.com/), a "Fast, unopinionated, minimalist web framework for node"
@@ -21,6 +19,7 @@ app.get("/", function (req, res) {
 // start listening
 app.listen(80);
 ```
+
 This is doing the same as in the previous example.
 
 With (modules like) this, our API can finally be easily implemented, concentrating on "middleware" style, not on tedious formatting of proper responses.
@@ -28,6 +27,7 @@ With (modules like) this, our API can finally be easily implemented, concentrati
 One more thing to mention here is that the express app object is basically an incoming response callback.
 
 It uses `http` itself for starting it up, but it can be attached to `https` server, when secure connections are needed.
+
 ```javascript
 const https = require("https");
 const express = require("express");
@@ -43,19 +43,20 @@ const app = express();
 
 // host the app callback in a https server
 https.createServer({ key: privateKey, cert: certificate }, app)
-	.listen(443);
+     .listen(443);
 ```
 
 ## Express quick setup
 
 The files for this project are included in folder `./support/03/`; use them for reference.
+
 1. create a folder for the first project `mkdir express-server-js & cd express-server-js`
 2. create the "heart" of the Node project `npm init -y` => this produces a `package.json` with default values; this is all you ever need;
 you can add a VS project to contain this in the IDE, but it's not required.
-3.  add the express module `npm i -s express` => you'll notice a new section created in `package.json` called `dependencies`;
+3. add the express module `npm i -s express` => you'll notice a new section created in `package.json` called `dependencies`;
 when cloning a repo, the first thing you need to do is to restore these dependencies, by running `npm install`, or short `npm i`
 4. change `main` value in `package.json` to `src/index.js`; this is the entry point in the app, we'll keep it in the `src` folder  
-   We'll also add a `start` script in the `scripts` section in package.json: `"start": "node src/index.js",` 
+   We'll also add a `start` script in the `scripts` section in package.json: `"start": "node src/index.js",`
 5. create folder structure  
    a. `mkdir src` => `src/index.js`, `src/env.js`, `src/app.js`, `src/log.js`  
    b. `mkdir routes` => `src/routes/discovery-client.route.js`, `src/routes/a-json.route.js`  
@@ -70,9 +71,9 @@ and yet another way to run the app is with `npm run start` or `npm start`;
 After running the command, the console should display the message `development server listening on port 80`;
 
 7. open browser  
-   a. go to http://localhost/ => 404 (no listener registered for route "/")  
-   b. go to http://localhost/discovery/client => server settings that clients would need (this is the only URL they would need to hardcode)  
-   c. go to http://localhost/api/json => the json response for this route  
+   a. go to [http://localhost/](http://localhost/) => 404 (no listener registered for route "/")  
+   b. go to [http://localhost/discovery/client](http://localhost/discovery/client) => server settings that clients would need (this is the only URL they would need to hardcode)  
+   c. go to [http://localhost/api/json](http://localhost/api/json) => the json response for this route  
 
 Now let's look at `src/app.js` to explain what happened. As I mentioned, there is no magic, so every response (including the 404) is written by us.
 
@@ -100,7 +101,5 @@ We've used the browser to hit these routes, because we're hosting `GET` method r
 For other methods (e.g. `POST`, `PUT`, `DELETE`, `PATCH`, `OPTIONS`, etc), use a tool like [wget](https://www.gnu.org/software/wget/), [curl](https://curl.haxx.se/), or [postman](https://www.getpostman.com/).
 
 Congratulations! You've just created a Node API and it looks like a manageable project now!
-
-
 
 [Next: typescript](04-typescript.md)
