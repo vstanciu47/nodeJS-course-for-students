@@ -5,7 +5,7 @@
 	"description": "",
 	"keywords": [],
 	"author": "valentin_ianchis@waters.com",
-	"repository": "ssh://git@bitbucketprod1.waters.com:7999/~rovian/nodejs-api-for-a-.net-developer.git",
+	"repository": "https://github.com/vallyian/nodejs-api-for-a-.net-developer.git",
 	"license": "ISC",
 	"main": "src/index.js",
 	"scripts": {
