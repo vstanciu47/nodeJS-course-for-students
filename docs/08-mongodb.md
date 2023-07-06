@@ -1,38 +1,51 @@
-# [NodeJs API for a .NET developer](../README.md)
+# NodeJs API
 
-## 08. Mongo db
+## Prerequisites
 
-### Prerequisites
+### MongoDB
 
-Download and install locally [MongoDB Community Server](https://www.mongodb.com/download-center/community)  
-![Mongo Setup 1](assets/mongo-setup-1.png)  
-Could add mongo bin dir path `C:\Program Files\MongoDB\Server\4.2\bin` to env PATH, so that `mongo`, `mongod` cmd are available.  
+Download and install locally [MongoDB Community Server](https://www.mongodb.com/try/download/community).
+![Mongo Setup 1](assets/08/MongoDB_configuration.png)
 
-If you choose to run it as service, verify it runs correctly  
-![Mongo Setup 2](assets/mongo-setup-2.png)  
+Add MongoDB `bin` directory path `C:\Program Files\MongoDB\Server\6.0\bin` to `PATH` environment variable, so that the `mongod` cmd is available.
 
-Could install a db management tool for it, like [Compass](https://www.mongodb.com/download-center/compass)  
-![Mongo Setup 3](assets/mongo-setup-3.png)  
+To establish a connection to the db, type this command in a CMD prompt:
 
-### Express app
-
-Install [MikroORM](https://mikro-orm.io/) and mongodb driver `npm i -s mikro-orm mongodb`  
-And the types for mongo driver module `npm i -D @types/mongodb`
-
-Verify/update `tsconfig.json`, make sure `"experimentalDecorators": true,` exists under `compilerOptions` section.
-
-Add new props in `env.ts` to store the db connection string and the db name to use
-
-```typescript
-MONGO_URL: "mongodb://127.0.0.1:27017",
-DB_NAME: "a-json-db"
+```shell
+mongod --port 27017 --dbpath <path_to_local_db>
 ```
 
-In `app.ts`, we need to init MikroORM and add a middleware that attaches an EntityManager to all incoming requests, so that further requests can use it automatically (note that this init can be done on demand, whenever it is required)
+Change `<path_to_local_db>` to a path of a local folder, for example `C:\dev\db`.
+
+#### MongoDB as a service
+
+If you choose to run it as service, verify it runs correctly:
+![Mongo Setup 2](assets/08/MongoDB_service.png)
+
+#### MongoDBCompass
+
+Optionally, you can install a db management tool for it, like [Compass](https://www.mongodb.com/try/download/compass):
+![Mongo Setup 3](assets/08/MongoDB_Compass.png)
+
+### Postman
+
+Download and install [Postman](https://www.postman.com/downloads/).
+
+## Express app
+
+Install [Mongoose](https://mongoosejs.com/) with `npm i mongoose -s`.
+
+Add new constants in `env.ts` to store the db connection string and the local db name to use:
 
 ```typescript
-import { MikroORM, ReflectMetadataProvider } from "mikro-orm";
-import { AJson } from "./entities/a-json";
+MONGO_URL: 'mongodb://127.0.0.1:27017',
+DB_NAME: 'a-json-db'
+```
+
+In `app.ts`, we need to initialise Mongoose and establish a connection to the db.
+
+```typescript
+import mongoose from 'mongoose';
 
 let app: express.Application;
 
@@ -41,406 +54,278 @@ async function makeApp(): Promise<express.Application> {
 
     app = express();
 
-    const orm = await MikroORM.init({
-        metadataProvider: ReflectMetadataProvider,
-        cache: { enabled: false },
-        entities: [],
-        dbName: env.DB_NAME,
-        clientUrl: env.MONGO_URL,
-        type: "mongo",
-        autoFlush: false
-    });
+    await mongoose.connect(env.MONGO_URL);
 
-    // make the entity manager available in request
-    app.use((req: IExpressRequest, _res: express.Response, next: express.NextFunction) => {
-        req.em = orm.em.fork();
-        next();
-    });
-    ...
+    ..
 }
 ```
 
-Noticed how `function makeApp()` became `async function makeApp()`? Its return is a promise. Because of this, we need to update how the function is used in `index.ts`
+Notice how `function makeApp()` became `async function makeApp()`? Because attempting to connect to the db is done via an `async` call to the `connect()` function, the return type of `function makeApp()` is now a promise. Because of this, we need to update how the function is used in `index.ts`.
 
 ```typescript
 makeApp()
-    .then(app => app.listen(env.PORT, () => log(`${env.NODE_ENV} server listening on port ${env.PORT}`)))
-    .catch(err => log(err));
+  .then((app) => app.listen(env.PORT, () => console.log(`${env.NODE_ENV} server listening on localhost:${env.PORT}`)))
+  .catch(err => console.log(err));
 ```
 
-If we `npm start` it now, we get a `Property 'em' does not exist on type 'Request<ParamsDictionary>'` error, so let's make an interface `src/interfaces/IExpressRequest.ts` to add the new prop:
+We'll replace the existing contents of `a-json.model.ts` with a class that will be used to manipulate objects from the db inside our app. This will ensure there is a 1:1 correspondence between what is stored in the db and what we are working with inside the app.
 
 ```typescript
-import { Request } from "express";
-import { EntityManager } from "mikro-orm";
+export class AJson {
 
-export interface IExpressRequest extends Request {
-    em?: EntityManager;
+ _id!: string;
+ key1!: string;
+ 'key 2'!: string;
+
+ constructor(model?: Partial<AJson>) {
+  if (!model || !(model instanceof Object)) {
+   model = <AJson><any>{};
+  }
+
+  this.key1 = model.key1 || 'value 1';
+  this['key 2'] = model['key 2'] || 'value of key 2';
+ }
 }
 ```
 
-Import it in `app.ts` and use it `req: IExpressRequest` instead of `req: express.Request`
+Mongoose works with a special object type called `Schema`. A `Schema` represents the object as it is persisted in the db.
+For this, we'll add `a-json.schema.ts` inside `src/schemas`:
 
 ```typescript
-import { IExpressRequest } from "./interfaces/IExpressRequest";
-...
-app.use((req: IExpressRequest, ...
-...
+import mongoose from 'mongoose';
+const { model, Schema } = mongoose;
+
+import env from '../env';
+import { AJson } from '../models/a-json.model';
+
+const AJsonSchema = new Schema<AJson>(
+  {
+    key1: { type: String, required: true },
+    'key 2': { type: String },
+  },
+  {
+    collection: env.DB_NAME
+  }
+);
+
+const AJsonDb = model<AJson>('AJson', AJsonSchema);
+
+export { AJsonDb };
 ```
 
-If we `npm start` it now, we get a `Error: No entities found, please use "entities" or "entitiesDirs" option` error.  
-MikroORM works with special classes, decorated as `Entity`. Decorators are just functions that abstract functionality.  
-We'll replace `a-json.model.ts` with an entity `src/entities/a-json.entity.ts` that will be persisted in the db
+Notice what we export from this file. `AJsonDb` is used to get objects from the db and to persist objects to the db.
+
+The new `AJson` class contains the same properties as the old `AJsonModel`, plus one required `_id` field, which is used to uniquely identify an `AJson` object in the db.
+
+Just after the line of code where we establish the connection to the db, add two middlewares that will allows us to parse the body of a response/request. Use them in `app.ts`:
 
 ```typescript
-import { Entity, MongoEntity, SerializedPrimaryKey, PrimaryKey, Property } from "mikro-orm";
-import { ObjectId } from "mongodb";
-
-@Entity()
-export class AJson implements MongoEntity<AJson> {
-    @PrimaryKey()
-    _id!: ObjectId;
-
-    @SerializedPrimaryKey()
-    id!: string;
-
-    @Property()
-    key1!: string;
-
-    @Property()
-    "key 2"!: string;
-
-    constructor(model?: Partial<AJson>) {
-        if (!model || !(model instanceof Object))
-            model = <AJson><any>{};
-
-        this.key1 = model.key1 || "value 1";
-        this["key 2"] = model["key 2"] || "value 2";
-    }
-}
-```
-
-The new `AJson` class contains the same props as the old `AJsonModel`, plus two required id fields (one used by mongo, the other one used by MikroORM)  
-The app will probably contain a lot of these, we can roll them up in `src/entities/index.ts` easier to import:
-
-```typescript
-import { AJson } from "./a-json.entity";
-
-// export "entities" array to be used with "MikroORM.init"
-export default [ AJson ];
-```
-
-And then import the entities index and usage in `app.ts`
-
-```typescript
-import entities from "./entities/";
+import express from 'express';
+..
 
 async function makeApp(): Promise<express.Application> {
-    const orm = await MikroORM.init({
-        ...
-        entities,
-        ...
-    });
+ ..
+
+ // middleware
+ app.use(express.urlencoded({ extended: false }));
+ app.use(express.json());
+
+ // routes
+ ..
 }
 ```
 
-Now the app starts again, but we're not using the db at all. Let's change `/api/ajson` route to accept GET and POST requests, to read/write from db.  
-Add [body-parser](https://github.com/expressjs/body-parser) middleware `npm i -s body-parser`, `npm i -D @types/body-parser` and use it in `app.ts`
+At this moment, we're not using the db at all. Let's change `/api/ajson` route to accept `GET` and `POST` requests, to read/write from the db.
+
+Change `a-json.service.ts`:
 
 ```typescript
-import * as bodyParser from "body-parser";
-...
-// middleware
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-
-// routes
-...
-```
-
-Change `a-json.service.ts`
-
-```typescript
-import { AJson } from "../entities/a-json.entity";
-import { EntityManager } from "mikro-orm";
+import { AJsonDb } from '../schemas/a-json.schema';
+import { AJson } from '../models/a-json.model';
 
 export { getAJson, saveAJson };
 
-async function getAJson(em: EntityManager, key1: string): Promise<Error | AJson | null> {
-    if (!(em instanceof EntityManager))
-        return Error("invalid request");
+async function getAJson(key1: string): Promise<Error | AJson | null> {
 
-    if (!key1 || typeof key1 !== "string")
-        return Error("invalid params");
+ if (!key1 || typeof key1 !== 'string') {
+  return Error('invalid params');
+ }
 
-    try {
-        const aJson = await em.findOne(AJson, { key1 });
-        return aJson;
-    } catch (ex) {
-        return ex;
-    }
+ try {
+  const aJson = await AJsonDb.findOne<AJson>({ key1: key1 });
+  return aJson;
+ } catch (ex: any) {
+  return ex;
+ }
 }
 
-async function saveAJson(em: EntityManager, aJson: Partial<AJson>): Promise<Error | AJson> {
-    if (!(em instanceof EntityManager))
-        return Error("invalid request");
+async function saveAJson(aJson: Partial<AJson>): Promise<Error | AJson> {
 
-    if (!aJson || typeof aJson !== "object" || !aJson.key1)
-        return Error("invalid params");
+ if (!aJson || typeof aJson !== 'object' || !aJson.key1) {
+  return Error('invalid params');
+ }
 
-    try {
-        const aJsonExists = await em.findOne(AJson, { key1: aJson.key1 });
-        if (aJsonExists)
-            return Error("item already exists");
-    } catch (ex) {
-        return ex;
-    }
+ try {
+  const aJsonExists = await AJsonDb.findOne<AJson>({ key1: aJson.key1 });
+  if (aJsonExists) {
+   return Error('item already exists');
+  }
+ } catch (ex: any) {
+  return ex;
+ }
 
-    const jsonModel = new AJson({
-        key1: aJson.key1,
-        "key 2": aJson["key 2"]
-    });
+ const jsonModel = new AJsonDb({
+  key1: aJson.key1,
+  'key 2': aJson['key 2']
+ });
 
-    try {
-        await em.persistAndFlush([jsonModel]);
-    } catch (ex) {
-        return ex;
-    }
+ try {
+  await jsonModel.save();
+ } catch (ex: any) {
+  return ex;
+ }
 
-    return jsonModel;
-}
-```
-
-Change `a-json.route.ts`
-
-```typescript
-import { Router, Response, NextFunction } from "express";
-import { EntityManager } from "mikro-orm";
-import { AJson } from "../entities/a-json.entity";
-import { IExpressRequest } from "../interfaces/IExpressRequest";
-import * as jsonService from "../services/a-json.service";
-
-export { setAJsonRoute };
-
-function setAJsonRoute(router: Router): Router {
-    router.get("/", getAJson);
-    router.post("/", postAJson);
-
-    return router;
-}
-
-async function getAJson(req: IExpressRequest, res: Response, next: NextFunction) {
-    if (!req.em || !(req.em instanceof EntityManager))
-        return next(Error("EntityManager not available"));
-
-    let aJson: Error | AJson | null;
-    try {
-        aJson = await jsonService.getAJson(req.em, req.query.key1);
-    } catch (ex) {
-        return next(ex);
-    }
-
-    if (aJson instanceof Error)
-        return next(aJson);
-
-    if (aJson === null)
-        return res.status(404).end();
-
-    return res.json(aJson);
-}
-
-async function postAJson(req: IExpressRequest, res: Response, next: NextFunction) {
-    if (!req.em || !(req.em instanceof EntityManager))
-        return next(Error("EntityManager not available"));
-
-    let aJson: Error | AJson;
-    try {
-        aJson = await jsonService.saveAJson(req.em, req.body);
-    } catch (ex) {
-        return next(ex);
-    }
-
-    if (aJson instanceof Error)
-        return next(aJson);
-
-    return res.status(201).json(aJson);
+ return jsonModel;
 }
 ```
 
-At this stage it's clear that we're no longer using `models` or `data` folders, so we can remove them.
-
-Try it!
-
-- `curl -X POST -iH "Content-Type: application/json" -d "{\"key1\":\"xxxxxxxx\"}" http://localhost/api/json` => **201** (with item details)  
-- `curl -X POST -iH "Content-Type: application/json" -d "{\"key1\":\"xxxxxxxx\"}" http://localhost/api/json` => **500** (item already exists)  
-- `curl -X POST -iH "Content-Type: application/json" http://localhost/api/json`                              => **500** (invalid params)  
-- `curl -i http://localhost/api/json?key1=xxxxxxxx` => **200** (with item details)  
-- `curl -i http://localhost/api/json`               => **500** (invalid params)  
-- `curl -i http://localhost/api/json?key1=aaaaaa`   => **404** (item not found)  
-
-It works, but do the existing tests still run? Run `npm test`...they don't! We modified `a-json.route` so no wonder.  
-The test must be updated to mock the EntityManager, because we don't want to read/write from the db.  
-Also, the GET route has 5 exit points that have to be tested, and the POST has 4 exit points.
-
-First, update `express-router-test.helper.ts` to use `IExpressRequest` instead of `Request`, add a `post` mocker and add a `end` method to response mock:
+Change `a-json.route.ts`:
 
 ```typescript
-import { Router, Response, NextFunction } from "express";
-import { IExpressRequest } from "../src/interfaces/IExpressRequest";
-...
-function getRouterMock() {
-    ...
-    const router = <Router><any>{
-        get: (path: string, cb: (req: IExpressRequest, res: Response, next: NextFunction) => any) => addRoute("GET", path, cb),
-        post: (path: string, cb: (req: IExpressRequest, res: Response, next: NextFunction) => any) => addRoute("POST", path, cb)
-    };
-    ...
+import { Router, Request, Response, NextFunction } from 'express';
+import { AJson } from '../models/a-json.model';
+import * as jsonService from '../services/a-json.service';
+
+export { setAJsonRouter };
+
+function setAJsonRouter(router: Router): Router {
+ router.get('/', getAJson);
+ router.post('/', postAJson);
+
+ return router;
 }
-...
-function getResponseSpyMock(): Response {
-    ...
-    const end = (): Response => res;
-    res.end = end;
-    spyOn(res, <any>res.end.name).and.callThrough();
-    ...
+
+async function getAJson(req: Request, res: Response, next: NextFunction) {
+
+ const query: any = req.query.key1;
+
+ let aJson: Error | AJson | null;
+ try {
+  aJson = await jsonService.getAJson(query);
+ } catch (ex) {
+  return next(ex);
+ }
+
+ if (aJson instanceof Error) {
+  return next(aJson);
+ }
+
+ if (aJson === null) {
+  return res.status(404).end();
+ }
+
+ console.log('getAJson(), aJson:', aJson);
+ return res.json(aJson);
+}
+
+async function postAJson(req: Request, res: Response, next: NextFunction) {
+
+ const body: any = req.body;
+
+ let aJson: Error | AJson;
+ try {
+  aJson = await jsonService.saveAJson(body);
+ } catch (ex) {
+  return next(ex);
+ }
+
+ if (aJson instanceof Error) {
+  return next(aJson);
+ }
+
+ console.log('postAJson(), aJson:', aJson);
+ return res.status(201).json(aJson);
 }
 ```
 
-Then replace `a-json.route.test.ts` with the new content:
+Update `app.ts`:
 
 ```typescript
-import { Router } from "express";
-import { noCallThru } from "proxyquire";
-import { getRouterMock, getResponseSpyMock, getNextFunctionSpyMock } from "../../test/express-router-test.helper";
-import { IExpressRequest } from "../interfaces/IExpressRequest";
+import express, { Router } from 'express';
+import { setAJsonRouter } from './routes/a-json.route';
 
-const proxyquire = noCallThru();
+async function makeApp(): Promise<express.Application> {
+ ..
 
-describe("a-json.route", () => {
-    // import the file under test and mock its dependencies
-
-    // prepare the exports object of the mocked dependency
-    // this is empty now because it will be asigned different values per test
-    const aJsonService: { getAJson(): { [key: string]: string } | Error | null } = <any>{};
-
-    class EntityManager { }
-
-    const aJsonRoute: { setAJsonRoute(router: Router): Router } = proxyquire(
-        "./a-json.route",
-        {
-            "mikro-orm": { EntityManager },
-            "../services/a-json.service": aJsonService
-        }
-    );
-
-    const { router, routes } = getRouterMock();
-
-    // build router; the routes will now contain all paths and their callbacks
-    // all we have to do now is call the callbacks with the desired params to test behaviour
-    beforeAll(() => aJsonRoute.setAJsonRoute(router));
-
-    it("setAJsonRoute - router setup", () => {
-        expect(routes["GET"]["/"]).toBeDefined("route GET / not setup");
-        expect(typeof routes["GET"]["/"]).toBe("function", "route GET / not a function");
-        expect(routes["POST"]["/"]).toBeDefined("route POST / not setup");
-        expect(typeof routes["POST"]["/"]).toBe("function", "route POST / not a function");
-    });
-
-    it("setAJsonRoute - GET / - exit point 1", async () => {
-        const req = <IExpressRequest>{};
-        const next = getNextFunctionSpyMock();
-
-        await routes["GET"]["/"](req, undefined, next);
-
-        expect(next).toHaveBeenCalledWith(Error("EntityManager not available"));
-    });
-
-    it("setAJsonRoute - GET / - exit point 2", async () => {
-        const err = Error("service mock error");
-        const req = <IExpressRequest>{
-            em: new EntityManager(),
-            query: {}
-        };
-        const next = getNextFunctionSpyMock();
-        aJsonService.getAJson = () => { throw err; };
-
-        await routes["GET"]["/"](req, undefined, next);
-
-        expect(next).toHaveBeenCalledWith(err);
-    });
-
-    it("setAJsonRoute - GET / - exit point 3", async () => {
-        const err = Error("service mock error");
-        const req = <IExpressRequest>{
-            em: new EntityManager(),
-            query: {}
-        };
-        const next = getNextFunctionSpyMock();
-        aJsonService.getAJson = () => err;
-
-        await routes["GET"]["/"](req, undefined, next);
-
-        expect(next).toHaveBeenCalledWith(err);
-    });
-
-    it("setAJsonRoute - GET / - exit point 4", async () => {
-        const req = <IExpressRequest>{
-            em: new EntityManager(),
-            query: {}
-        };
-        const res = getResponseSpyMock();
-        aJsonService.getAJson = () => null;
-
-        await routes["GET"]["/"](req, res, undefined);
-
-        expect(res.status).toHaveBeenCalledWith(404);
-        expect(res.end).toHaveBeenCalled();
-    });
-
-    it("setAJsonRoute - GET / - exit point 5", async () => {
-        const req = <IExpressRequest>{
-            em: new EntityManager(),
-            query: {}
-        };
-        const res = getResponseSpyMock();
-        const json = { mockKey: "mock value" };
-        aJsonService.getAJson = () => json;
-
-        await routes["GET"]["/"](req, res, null);
-
-        expect(res.json).toHaveBeenCalledWith(json);
-    });
-
-    xit("setAJsonRoute - POST / - exit point 1", async () => expect(undefined).toBeDefined("NOT IMPLEMENTED"));
-    xit("setAJsonRoute - POST / - exit point 2", async () => expect(undefined).toBeDefined("NOT IMPLEMENTED"));
-    xit("setAJsonRoute - POST / - exit point 3", async () => expect(undefined).toBeDefined("NOT IMPLEMENTED"));
-    xit("setAJsonRoute - POST / - exit point 4", async () => expect(undefined).toBeDefined("NOT IMPLEMENTED"));
-});
+ // routes
+ ..
+ app.use(env.A_JSON_ROUTE, setAJsonRouter(Router()));
+}
 ```
 
-I have added the complete unit tests for GET route, you add the same for the 4 exit points of the POST route.
+At this stage it's clear that we're no longer using the `data` folder, so we can remove it.
 
-Finally, running the complete test suite with `npm test` reveals that `get-discovery-client.e2e.test.ts` fails because we did not update it after making `makeApp` a promise, so this needs updated too
+Try it! Open a CMD prompt and type and run these following `curl` commands (one by one, in this order):
+
+- `curl -X POST -iH "Content-Type: application/json" -d "{\"key1\":\"abc\"}" http://localhost:3000/api/json` => **201** (with item details)  
+- `curl -X POST -iH "Content-Type: application/json" -d "{\"key1\":\"abc\"}" http://localhost:3000/api/json` => **500** (item already exists)
+- `curl -X POST -iH "Content-Type: application/json" http://localhost:3000/api/json` => **500** (invalid params)
+- `curl -i http://localhost:3000/api/json?key1=abc` => **200** (with item details)
+- `curl -i http://localhost:3000/api/json`               => **500** (invalid params)
+- `curl -i http://localhost:3000/api/json?key1=xyz`   => **404** (item not found)
+
+If done correctly, the API should return the above mentioned status codes.
+
+Update the `a-json.route.test.ts` unit test. We now have a route that accepts both `GET` and `POST` requests, so change router mock object:
 
 ```typescript
-describe(`GET ${env.DISCOVERY_CLIENT_ROUTE}`, () => it("success", async () => {
+ const router = <Router><any>{
+  get: (path: string, cb: (req: Request, res: Response, next: NextFunction) => any) => routes[path] = cb,
+  post: (path: string, cb: (req: Request, res: Response, next: NextFunction) => any) => routes[path] = cb
+ };
+```
+
+In the same file, `a-json.route.test.ts`, make sure the `proxyquire()` call returns a function which has the same name as the exported function from `a-json.route.ts`.
+
+`a-json.route.test.ts`:
+
+```typescript
+ const aJsonRoute: { setAJsonRouter(router: Router): Router } = proxyquire(
+  './a-json.route',
+  {
+   '../services/a-json.service': aJsonService
+  }
+ );
+```
+
+`a-json.route.ts`:
+
+```typescript
+export { setAJsonRouter };
+```
+
+The 2 function names **must** match.
+
+Finally, running the end-to-end test with `npm run test:e2e` reveals that `get-discovery-client.e2e.test.ts` fails because we did not update it after making `makeApp()` a promise, so the test needs to be updated:
+
+```typescript
+describe(`Get ${env.DISCOVERY_CLIENT_ROUTE}`, () => {
+  it('success', async () => {
     const app = await makeApp();
     supertest(app)
-        .get(env.DISCOVERY_CLIENT_ROUTE)
-        .expect(200, { jsonRoute: env.A_JSON_ROUTE });
-}));
+      .get(env.DISCOVERY_CLIENT_ROUTE)
+      .expect(200, { jsonRoute: env.A_JSON_ROUTE });
+  });
+});
 ```
 
 Now we're done!
 
+---
+
 Notes:
 
-- this is only a proof a concept, we're using either a "good" or a "bad" response, not doing proper REST.
-- if you have a db manager, you could take a peek at the data saved.
+- this is only a proof a concept API
+- if you have installed a db manager like Compass, you could take a peek at the data saved
 - we're not using any security with our mongodb instance; for that read the [official documentation](https://docs.mongodb.com/manual/administration/security-checklist/)
 - we're not "throwing" errors, we're "returning" errors
-- there is another "acceptance" testing layer, which tests an app just like a normal user would
-and this involves writing test cases in human readable form
-and bind that to an implementation that tests a production like environment.
-This is way beyond the scope of this presentation, for this there is [cucumber.js](https://github.com/cucumber/cucumber-js).
-It is as simple as `jasmine` is, just take a look at the [demo](http://cucumber.github.io/cucumber-js/).
