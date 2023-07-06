@@ -5,7 +5,7 @@
 ### MongoDB
 
 Download and install locally [MongoDB Community Server](https://www.mongodb.com/try/download/community).
-![Mongo Setup 1](assets/08/MongoDB_configuration.png)
+![Mongo Setup 1](assets/08/MongoDB_configuration.PNG)
 
 Add MongoDB `bin` directory path `C:\Program Files\MongoDB\Server\6.0\bin` to `PATH` environment variable, so that the `mongod` cmd is available.
 
@@ -20,12 +20,12 @@ Change `<path_to_local_db>` to a path of a local folder, for example `C:\dev\db`
 #### MongoDB as a service
 
 If you choose to run it as service, verify it runs correctly:
-![Mongo Setup 2](assets/08/MongoDB_service.png)
+![Mongo Setup 2](assets/08/MongoDB_service.PNG)
 
 #### MongoDBCompass
 
 Optionally, you can install a db management tool for it, like [Compass](https://www.mongodb.com/try/download/compass):
-![Mongo Setup 3](assets/08/MongoDB_Compass.png)
+![Mongo Setup 3](assets/08/MongoDB_Compass.PNG)
 
 ### Postman
 
